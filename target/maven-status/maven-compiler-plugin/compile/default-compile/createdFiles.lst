@@ -1,0 +1,8 @@
+com\anojo\echecs\pieces\Roi.class
+com\anojo\echecs\pieces\Pion.class
+com\anojo\echecs\pieces\Tour.class
+com\anojo\echecs\pieces\Cavalier.class
+com\anojo\echecs\Jeu.class
+com\anojo\echecs\pieces\Fou.class
+com\anojo\echecs\Piece.class
+com\anojo\echecs\pieces\Dame.class
