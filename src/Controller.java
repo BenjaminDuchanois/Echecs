@@ -35,19 +35,50 @@ public class Controller implements ActionListener{
             caseApres = (JButton) ae.getSource();
             xApres = caseApres.getY()/90;
             yApres = caseApres.getX()/98;
-            if(((placement.plateau[caseApres.getY()/90][caseApres.getX()/98]==null) 
-                || (placement.plateau[caseApres.getY()/90][caseApres.getX()/98].blanc != placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98].blanc))
-                && (placement.plateau[xAvant][yAvant].deplace(xApres,yApres)))
+            if(placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98].nom=="Pion")
             {
-                placement.misAJour(xAvant, xApres, yAvant, yApres);
-                caseApres.setIcon(caseAvant.getIcon());
-                caseAvant.setIcon(null);
-                placement.afficher();
-                System.out.println("Deplacement fait " + xApres + " " + yApres);
+                if(placement.plateau[caseApres.getY()/90][caseApres.getX()/98]!=null)
+                    {
+                    if(placement.plateau[xAvant][yAvant].deplace(xApres,yApres))
+                        {
+                            placement.misAJour(xAvant, xApres, yAvant, yApres);
+                            caseApres.setIcon(caseAvant.getIcon());
+                            caseAvant.setIcon(null);
+                        }
+                    }
+                else
+                    if(placement.plateau[xAvant][yAvant].blanc){
+                        if ((yAvant == yApres) && (xAvant == xApres+1))
+                        {
+                            placement.misAJour(xAvant, xApres, yAvant, yApres);
+                            caseApres.setIcon(caseAvant.getIcon());
+                            caseAvant.setIcon(null);
+                        }
+                    }
+                    else
+                        if ((yAvant == yApres) && (xAvant == xApres-1))
+                        {
+                            placement.misAJour(xAvant, xApres, yAvant, yApres);
+                            caseApres.setIcon(caseAvant.getIcon());
+                            caseAvant.setIcon(null);
+                        }
+                selection = !selection;
             }
-            else
-                System.out.println("Deplacement impossible " + xApres + " " + yApres);
-            selection = !selection; 
+            else{
+                if(((placement.plateau[caseApres.getY()/90][caseApres.getX()/98]==null) 
+                    || (placement.plateau[caseApres.getY()/90][caseApres.getX()/98].blanc != placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98].blanc))
+                    && (placement.plateau[xAvant][yAvant].deplace(xApres,yApres)))
+                {
+                    placement.misAJour(xAvant, xApres, yAvant, yApres);
+                    caseApres.setIcon(caseAvant.getIcon());
+                    caseAvant.setIcon(null);
+                    placement.afficher();
+                    System.out.println("Deplacement fait " + xApres + " " + yApres);
+                }
+                else
+                    System.out.println("Deplacement impossible " + xApres + " " + yApres);
+                selection = !selection; 
+            }
         }
     }
 }

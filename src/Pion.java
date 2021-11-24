@@ -26,10 +26,10 @@ public class Pion extends Piece{
 
 	public boolean deplace(int x, int y){
 		if (this.blanc){
-			if ((this.y == y) && (this.x == x+1))
+			if (((this.y == y+1) && (this.x == x+1)) || ((this.y == y-1) && (this.x == x+1)))
 				return true;}
 		else
-			if ((this.y == y) && (this.x == x-1))
+			if (((this.y == y+1) && (this.x == x-1)) || ((this.y == y-1) && (this.x == x-1)))
 				return true;
 		return false;
 	}
