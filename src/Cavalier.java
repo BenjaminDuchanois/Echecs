@@ -4,6 +4,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 public class Cavalier extends Piece{
+
+	//Constructeur de la pièce cavalier, gérant ses coordonnées et son image
 	public Cavalier(int x, int y)
 	{
 		super(x, y);
@@ -23,6 +25,8 @@ public class Cavalier extends Piece{
 
 	}
 
+	//Son déplacement est possible que si il se déplace de 2 cases dans une direction
+	//Et de 1 case dans l'autre
 	public boolean deplace(int x, int y){
 		if( 
 			(

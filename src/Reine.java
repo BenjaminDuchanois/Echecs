@@ -4,6 +4,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 public class Reine extends Piece{
+
+	//Constructeur de la pièce Reine, gérant ses coordonnées et son image
 	public Reine(int x, int y)
 	{
 		super(x, y);
@@ -23,6 +25,7 @@ public class Reine extends Piece{
 
 	}
 
+	//La reine combine les déplacements de la tour et du fou
 	public boolean deplace(int x, int y){
 		if((this.x == x) || (this.y == y))
 			return true;

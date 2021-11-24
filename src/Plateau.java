@@ -2,8 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Plateau extends JFrame{
+	//Gère la fenêtre et le plateau de base avec un echiquier composé de JButton
 	public Plateau(Placement p, Controller c){
 
+		//On empêche la déformation car cela crée quelques problème sur le jeu
 		this.setSize(800, 700);
 		this.setTitle("Jeu d'Echecs");
 		this.setLocationRelativeTo(null);
@@ -26,6 +28,7 @@ public class Plateau extends JFrame{
                     carreau.setIcon(new ImageIcon(img));
                 }
 
+				//Alterne les couleurs pour faire un "damier"
 				if(blanc) 
 				{
 					carreau.setBackground(new Color(255,255,255));

@@ -1,11 +1,14 @@
 public class Placement {
+    //Gère l'emplacement des différentes pièces via un tableu
     public Piece[][] plateau;
 
+    //Le constructeur initialise un tableau prédéfini
     public Placement(){
         this.plateau = new Piece[7][8];
         initialiserPlateau();
     }
 
+    //On place les pions de la façon standart. La couleur des pièces est directement géré selon leur ligne.
     public void initialiserPlateau(){
         for (int i=0; i<7; i++){
             for (int j=0; j<8; j++){
@@ -27,6 +30,8 @@ public class Placement {
         }
     }
 
+    //Met à jour le tableau avec les coordonnées d'avant et après déplacement. 
+    //Change également les coordonées de la pièce pour qu'elle puisse se déplacer de nouveau.
     public void misAJour(int xAv, int xAp, int yAv, int yAp){
         this.plateau[xAp][yAp] = this.plateau[xAv][yAv];
         this.plateau[xAv][yAv] = null;
@@ -34,6 +39,7 @@ public class Placement {
         this.plateau[xAp][yAp].y = yAp;
     }
 
+    //Simple affichage pour gérer de potentielles erreurs
     public void afficher(){
         for (int x = 0; x < 7; x++) {
             System.out.print("|");
