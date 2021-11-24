@@ -35,8 +35,9 @@ public class Controller implements ActionListener{
             caseApres = (JButton) ae.getSource();
             xApres = caseApres.getY()/90;
             yApres = caseApres.getX()/98;
-            if((placement.plateau[caseApres.getY()/90][caseApres.getX()/98]==null)
-                &&(placement.plateau[xAvant][yAvant].deplace(xApres,yApres)))
+            if(((placement.plateau[caseApres.getY()/90][caseApres.getX()/98]==null) 
+                || (placement.plateau[caseApres.getY()/90][caseApres.getX()/98].blanc != placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98].blanc))
+                && (placement.plateau[xAvant][yAvant].deplace(xApres,yApres)))
             {
                 placement.misAJour(xAvant, xApres, yAvant, yApres);
                 caseApres.setIcon(caseAvant.getIcon());
