@@ -24,7 +24,9 @@ public class Tour extends Piece{
 	}
 
 	public boolean deplace(int x, int y){
-		return true;
+		if((this.y==y) || (this.x==x))
+			return true;
+		return false;
 	}
-	
+
 }

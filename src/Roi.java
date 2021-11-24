@@ -24,6 +24,10 @@ public class Roi extends Piece{
 	}
 
 	public boolean deplace(int x, int y){
+		if((x-this.x > 1) || (x-this.x < -1))
+			return false;
+		if((y-this.y > 1) || (y-this.y < -1))
+			return false;
 		return true;
 	}
 			

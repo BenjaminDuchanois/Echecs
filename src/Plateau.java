@@ -7,6 +7,7 @@ public class Plateau extends JFrame{
 		this.setSize(800, 700);
 		this.setTitle("Jeu d'Echecs");
 		this.setLocationRelativeTo(null);
+		this.setResizable(false);
 
 		JPanel pn = new JPanel(); 
 

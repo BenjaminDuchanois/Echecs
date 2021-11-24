@@ -30,6 +30,8 @@ public class Placement {
     public void misAJour(int xAv, int xAp, int yAv, int yAp){
         this.plateau[xAp][yAp] = this.plateau[xAv][yAv];
         this.plateau[xAv][yAv] = null;
+        this.plateau[xAp][yAp].x = xAp;
+        this.plateau[xAp][yAp].y = yAp;
     }
 
     public void afficher(){
@@ -38,23 +40,23 @@ public class Placement {
             for (int y = 0; y < 8; y++) {
                 if(this.plateau[x][y] == null) System.out.print("  |");
                     else{
-                        if(this.plateau[x][y].nom == "Pion" && this.plateau[x][y].blanc == false) System.out.print("Pb|");
-                        if(this.plateau[x][y].nom == "Pion" && this.plateau[x][y].blanc == true) System.out.print("Pw|");
+                        if(this.plateau[x][y].nom == "Pion" && this.plateau[x][y].blanc == false) System.out.print("Pn|");
+                        if(this.plateau[x][y].nom == "Pion" && this.plateau[x][y].blanc == true) System.out.print("Pb|");
 
-                        if(this.plateau[x][y].nom == "Tour" && this.plateau[x][y].blanc == false) System.out.print("Rb|");
-                        if(this.plateau[x][y].nom == "Tour" && this.plateau[x][y].blanc == true) System.out.print("Rw|");
+                        if(this.plateau[x][y].nom == "Tour" && this.plateau[x][y].blanc == false) System.out.print("Tn|");
+                        if(this.plateau[x][y].nom == "Tour" && this.plateau[x][y].blanc == true) System.out.print("Tb|");
 
-                        if(this.plateau[x][y].nom == "Cavalier" && this.plateau[x][y].blanc == false) System.out.print("Kb|");
-                        if(this.plateau[x][y].nom == "Cavalier" && this.plateau[x][y].blanc == true) System.out.print("Kw|");
+                        if(this.plateau[x][y].nom == "Cavalier" && this.plateau[x][y].blanc == false) System.out.print("Cn|");
+                        if(this.plateau[x][y].nom == "Cavalier" && this.plateau[x][y].blanc == true) System.out.print("Cb|");
 
-                        if(this.plateau[x][y].nom == "Fou" && this.plateau[x][y].blanc == false) System.out.print("Bb|");
-                        if(this.plateau[x][y].nom == "Fou" && this.plateau[x][y].blanc == true) System.out.print("Bw|");
+                        if(this.plateau[x][y].nom == "Fou" && this.plateau[x][y].blanc == false) System.out.print("Fn|");
+                        if(this.plateau[x][y].nom == "Fou" && this.plateau[x][y].blanc == true) System.out.print("Fb|");
 
-                        if(this.plateau[x][y].nom == "Roi" && this.plateau[x][y].blanc == false) System.out.print("Gb|");
-                        if(this.plateau[x][y].nom == "Roi" && this.plateau[x][y].blanc == true) System.out.print("Gw|");
+                        if(this.plateau[x][y].nom == "Roi" && this.plateau[x][y].blanc == false) System.out.print("Rn|");
+                        if(this.plateau[x][y].nom == "Roi" && this.plateau[x][y].blanc == true) System.out.print("Rb|");
 
-                        if(this.plateau[x][y].nom == "Reine" && this.plateau[x][y].blanc == false) System.out.print("Qb|");
-                        if(this.plateau[x][y].nom == "Reine" && this.plateau[x][y].blanc == true) System.out.print("Qw|");
+                        if(this.plateau[x][y].nom == "Reine" && this.plateau[x][y].blanc == false) System.out.print("Qn|");
+                        if(this.plateau[x][y].nom == "Reine" && this.plateau[x][y].blanc == true) System.out.print("Qb|");
                     }
             }
             System.out.println();

@@ -24,7 +24,13 @@ public class Reine extends Piece{
 	}
 
 	public boolean deplace(int x, int y){
-		return true;
+		if((this.x == x) || (this.y == y))
+			return true;
+			for(int i=0; i<7; i++)
+		if((((this.x==x+i) && (this.y==y+i)) || ((this.x==x+i) && (this.y==y-i)))
+		||(((this.x==x-i) && (this.y==y+i)) || ((this.x==x-i) && (this.y==y-i))))
+			return true;
+		return false;
 	}
 			
 }

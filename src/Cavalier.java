@@ -24,7 +24,19 @@ public class Cavalier extends Piece{
 	}
 
 	public boolean deplace(int x, int y){
-		return true;
+		if( 
+			(
+			((this.y == y-2) || (this.y == y+2))
+		 && ((this.x == x+1) || (this.x == x-1))
+		    )
+		||  
+			(
+			((this.y == y-1) || (this.y == y+1))
+		 && ((this.x == x+2) || (this.x == x-2))
+		 	) 
+		  )
+			return true;
+		return false;
 	}
 			
 }

@@ -19,30 +19,34 @@ public class Controller implements ActionListener{
     public void actionPerformed(ActionEvent ae){
         if(!selection){
             caseAvant = (JButton) ae.getSource();
-            if(placement.plateau[caseAvant.getY()/90][caseAvant.getX()/100]!=null)
+            
+            xAvant = caseAvant.getY()/90;
+            yAvant = caseAvant.getX()/98;
+            if(placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98]!=null)
             {
-                System.out.println("Non null");
                 selection = !selection;
-                xAvant = caseAvant.getY()/90;
-                yAvant = caseAvant.getX()/100;
+                System.out.println(placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98].nom + " selectionee " + xAvant + " " + yAvant);
             }
             else
-                System.out.println("Null");
+                System.out.println("Case vide " + xAvant + " " + yAvant);
         }
         else
         {
             caseApres = (JButton) ae.getSource();
             xApres = caseApres.getY()/90;
-            yApres = caseApres.getX()/100;
-            if(placement.plateau[caseApres.getY()/90][caseApres.getX()/100]==null)
+            yApres = caseApres.getX()/98;
+            if((placement.plateau[caseApres.getY()/90][caseApres.getX()/98]==null)
+                &&(placement.plateau[xAvant][yAvant].deplace(xApres,yApres)))
             {
                 placement.misAJour(xAvant, xApres, yAvant, yApres);
                 caseApres.setIcon(caseAvant.getIcon());
                 caseAvant.setIcon(null);
                 placement.afficher();
+                System.out.println("Deplacement fait " + xApres + " " + yApres);
             }
-            selection = !selection;
-            
+            else
+                System.out.println("Deplacement impossible " + xApres + " " + yApres);
+            selection = !selection; 
         }
     }
 }
