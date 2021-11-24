@@ -27,6 +27,11 @@ public class Placement {
         }
     }
 
+    public void misAJour(int xAv, int xAp, int yAv, int yAp){
+        this.plateau[xAp][yAp] = this.plateau[xAv][yAv];
+        this.plateau[xAv][yAv] = null;
+    }
+
     public void afficher(){
         for (int x = 0; x < 7; x++) {
             System.out.print("|");

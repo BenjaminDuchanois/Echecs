@@ -23,4 +23,8 @@ public class Pion extends Piece{
 			e.printStackTrace();
 		}
 	}
+
+	public boolean deplace(int x, int y){
+		return true;
+	}
 }

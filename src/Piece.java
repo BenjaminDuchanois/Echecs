@@ -24,4 +24,14 @@ public abstract class Piece{
 			return this.img;
 		}
 
+		public int getX(){
+			return this.x;
+		}
+
+		public int getY(){
+			return this.y;
+		}
+
+		public abstract boolean deplace(int x, int y);
+
 }

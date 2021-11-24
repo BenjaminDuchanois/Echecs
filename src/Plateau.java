@@ -5,7 +5,11 @@ public class Plateau extends JFrame{
 	public Plateau(Placement p, Controller c){
 
 		this.setSize(800, 700);
+		this.setTitle("Jeu d'Echecs");
+		this.setLocationRelativeTo(null);
+
 		JPanel pn = new JPanel(); 
+
 		pn.setPreferredSize(new Dimension(700,800));
 		pn.setLayout(new GridLayout(7,8));
 		boolean blanc=false;
