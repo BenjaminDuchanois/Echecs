@@ -1,14 +1,14 @@
 package com.anojo.echecs.pieces;
-public class Tour extends Piece{
-			public Tour(int x, int y, boolean blanc)
+public class Reine extends Piece{
+			public Reine(int x, int y, boolean blanc)
 			{
 				super();
-				this.name = "Tour";
+				this.name = "Reine";
 				File input;
 				try
 				{
-					if(this.blanc) input = new File("images/Tour_Blanc.png");
-					else input = new File("images/Tour_Noir.png");
+					if(this.blanc) input = new File("images/Reine_Blanc.png");
+					else input = new File("images/Reine_Noir.png");
 					this.img = ImageIO.read(input);
 				} 
 		

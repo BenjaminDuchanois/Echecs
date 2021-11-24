@@ -1,43 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.anojo.echecs;
+import javax.swing.*;
+import java.awt.*;
 
-/**
- *
- * @author Benja
- */
-public abstract class Piece {
-    String name;
-    int x, y;
-    
-    public Piece(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
-    
-    public abstract boolean deplacer(int x, int y);
+public abstract class Piece{
+		private int x;
+		private int y;
+		boolean blanc;
+		String nom; 
+		
+		public Piece(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+			
+			if(x == 5 || x == 6) this.blanc = false;
+			else if (x == 0 || x == 1) this.blanc = true;
+			
+		}
 
-    public String getName() {
-        return name;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-    
-    
 }
