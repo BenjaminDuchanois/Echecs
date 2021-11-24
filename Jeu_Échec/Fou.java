@@ -1,6 +1,7 @@
 public class Fou extends Piece{
 			public Fou(int x, int y, boolean blanc)
 			{
+				//CECI EST UN GROS TEST
 				super();
 				this.name = "Fou";
 				File input;
