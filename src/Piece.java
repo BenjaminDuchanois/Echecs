@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.awt.Image;
 import java.io.File;
 import javax.imageio.ImageIO;
+//import placement.java;
 
 public abstract class Piece{
 	//Classe abstraite représentant toutes les Pièces par des coordonnées
@@ -11,6 +12,7 @@ public abstract class Piece{
 	protected boolean blanc;
 	protected String nom; 
 	protected Image img;
+	//protected Placement p;
 	
 	//Gère les coordonnées, et permet d'inialiser les pièces de la bonne couleur
 	//Selon si elles sont sur les 2 lignes du haut ou du bas.
@@ -39,33 +41,5 @@ public abstract class Piece{
 	//Cette fonction permettra de savoir de quelle façon chaque pièce a le droit de se déplacer.
 	public abstract boolean deplace(int x, int y);
 
-	/**public boolean obstacle(int x, int y){
-        int lig = this.x;
-        if(lig < x)
-            for(lig+=1; lig<x; lig++)
-                if(placement.plateau[lig][y] != null)
-                    return false;
-
-        lig = this.x;
-        if(lig > x)
-        for(lig-=1; lig>x; lig--)
-            if(placement.plateau[lig][y] != null)
-                return false;
-
-        int col = this.y;
-        if(lig < y)
-            for(col+=1; col<y; col++)
-                if(placement.plateau[x][col] != null)
-                    return false;
-
-        col = this.y;
-        if(col > y)
-        for(col-=1; col>y; col--)
-            if(placement.plateau[x][col] != null)
-                return false;
-        
-        return true;
-		
-	}**/
 
 }
