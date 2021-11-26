@@ -12,13 +12,14 @@ public class Controller implements ActionListener{
     private Plateau plateau;
     private int xAvant, xApres, yAvant, yApres;
     //Prend également le bouton de correspondant à chaque clic, et un booléen pour différencier les 2 clics.
-    private boolean selection;
+    private boolean selection, tour;
     private JButton caseAvant, caseApres;
     
     //On initalise la selection d'une pièce à faux
     public Controller(Jeu parent){
         this.parent= parent;
         selection = false;
+        tour = true;
     }
 
     //Lorsqu'un clic a lieu
@@ -34,11 +35,17 @@ public class Controller implements ActionListener{
             yAvant = caseAvant.getX()/98;
             //Sert d'alias pour que le code soit plus lisible
             pieceAvant = this.parent.placement.plateau[xAvant][yAvant];
+
             //Si la case contient bien une pièce, on la selectionne
             if(pieceAvant!=null)
             {
-                selection = !selection;
-                System.out.println(pieceAvant.nom + " selectionee " + xAvant + " " + yAvant);
+                if((!tour)&&(pieceAvant.blanc))
+                    System.out.println("C'est aux blancs de jouer");
+                else if((tour)&&(!pieceAvant.blanc))
+                        System.out.println("C'est aux blancs de jouer");
+                    else
+                        {selection = !selection;
+                        System.out.println(pieceAvant.nom + " selectionee " + xAvant + " " + yAvant);}
             }
             //Si la case est vide, on l'indique au cas où
             else
@@ -197,6 +204,7 @@ public class Controller implements ActionListener{
         caseApres.setIcon(caseAvant.getIcon());
         caseAvant.setIcon(null);
         parent.placement.afficher();
+        this.tour = !tour;
     }
     
     protected void Victoire(boolean blanc)
