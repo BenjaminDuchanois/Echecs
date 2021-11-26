@@ -12,7 +12,6 @@ public abstract class Piece{
 	protected boolean blanc;
 	protected String nom; 
 	protected Image img;
-	//protected Placement p;
 	
 	//Gère les coordonnées, et permet d'inialiser les pièces de la bonne couleur
 	//Selon si elles sont sur les 2 lignes du haut ou du bas.
@@ -40,6 +39,5 @@ public abstract class Piece{
 
 	//Cette fonction permettra de savoir de quelle façon chaque pièce a le droit de se déplacer.
 	public abstract boolean deplace(int x, int y);
-
 
 }

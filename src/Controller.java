@@ -9,10 +9,9 @@ import javax.swing.ImageIcon;
 public class Controller implements ActionListener{
     //Prend en paramètres la disposition des pions, la fenetre, les coordonnées du premier clic et du 2ème.
     private Jeu parent;
-    private Plateau plateau;
     private int xAvant, xApres, yAvant, yApres;
     //Prend également le bouton de correspondant à chaque clic, et un booléen pour différencier les 2 clics.
-    private boolean selection, tour;
+    protected boolean selection, tour;
     private JButton caseAvant, caseApres;
     
     //On initalise la selection d'une pièce à faux
@@ -40,7 +39,7 @@ public class Controller implements ActionListener{
             if(pieceAvant!=null)
             {
                 if((!tour)&&(pieceAvant.blanc))
-                    System.out.println("C'est aux blancs de jouer");
+                    System.out.println("C'est aux noirs de jouer");
                 else if((tour)&&(!pieceAvant.blanc))
                         System.out.println("C'est aux blancs de jouer");
                     else
@@ -201,10 +200,17 @@ public class Controller implements ActionListener{
         else
             System.out.println(p.nom + " va en " + x + " " + y);
         parent.placement.misAJour(p.x, x, p.y, y);
+
         caseApres.setIcon(caseAvant.getIcon());
         caseAvant.setIcon(null);
         parent.placement.afficher();
-        this.tour = !tour;
+        this.tour = !tour; 
+
+        int i;
+        //if(!tour)
+          //  i = parent.runn();
+        //else   
+            System.out.println("AUX BLANCS");
     }
     
     protected void Victoire(boolean blanc)
@@ -215,5 +221,4 @@ public class Controller implements ActionListener{
             System.out.println("Victoire des noirs !");
         this.parent.fin(blanc);
     }
-
 }

@@ -6,7 +6,7 @@ public class Plateau extends JFrame{
 	//Gère la fenêtre et le plateau de base avec un echiquier composé de JButton
 	public Plateau(Jeu parent){
 		this.parent = parent;
-		//On empêche la déformation car cela crée quelques problème sur le jeu
+		//On empêche la déformation car cela crée quelques problèmes sur le jeu
 		this.setSize(800, 700);
 		this.setTitle("Jeu d'Echecs");
 		this.setLocationRelativeTo(null);
