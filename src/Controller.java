@@ -205,6 +205,7 @@ public class Controller implements ActionListener{
             System.out.println("Victoire des blancs!");
         else
             System.out.println("Victoire des noirs !");
+        this.parent.fin(blanc);
     }
 
 }

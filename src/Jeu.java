@@ -17,4 +17,12 @@ class Jeu implements Runnable {
     public static void main(String[] args) {
         Jeu jeu = new Jeu();
     }
+
+    protected void fin(boolean blanc){
+		EcranFin ec = new EcranFin(this, blanc);
+	}
+
+    protected void rejouer(){
+        new Jeu();
+    }
 }
