@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 public class Controller implements ActionListener{
     //Prend en paramètres la disposition des pions, la fenetre, les coordonnées du premier clic et du 2ème.
-    private Placement placement;
+    private Jeu parent;
     private Plateau plateau;
     private int xAvant, xApres, yAvant, yApres;
     //Prend également le bouton de correspondant à chaque clic, et un booléen pour différencier les 2 clics.
@@ -16,8 +16,8 @@ public class Controller implements ActionListener{
     private JButton caseAvant, caseApres;
     
     //On initalise la selection d'une pièce à faux
-    public Controller(Placement p){
-        this.placement= p;
+    public Controller(Jeu parent){
+        this.parent= parent;
         selection = false;
     }
 
@@ -33,7 +33,7 @@ public class Controller implements ActionListener{
             xAvant = caseAvant.getY()/90;
             yAvant = caseAvant.getX()/98;
             //Sert d'alias pour que le code soit plus lisible
-            pieceAvant = placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98];
+            pieceAvant = this.parent.placement.plateau[xAvant][yAvant];
             //Si la case contient bien une pièce, on la selectionne
             if(pieceAvant!=null)
             {
@@ -51,8 +51,8 @@ public class Controller implements ActionListener{
             caseApres = (JButton) ae.getSource();
             xApres = caseApres.getY()/90;
             yApres = caseApres.getX()/98;
-            pieceApres = placement.plateau[caseApres.getY()/90][caseApres.getX()/98];
-            pieceAvant = placement.plateau[caseAvant.getY()/90][caseAvant.getX()/98];
+            pieceApres = this.parent.placement.plateau[xApres][yApres];
+            pieceAvant = this.parent.placement.plateau[xAvant][yAvant];
 
             //Si la pièce séléctionnée était un pion c'est spécial, son comportement peut différer
             if(pieceAvant.nom=="Pion")
@@ -63,10 +63,7 @@ public class Controller implements ActionListener{
                     //Si les paramètres sont bons, alors on déplace le pion et prend la pièce adverse.
                     if((pieceAvant.deplace(xApres,yApres)) && (pieceApres.blanc != pieceAvant.blanc))
                         {
-                            System.out.println("Pion prend " + pieceApres.nom + " en " + xApres + " " + yApres);
-                            placement.misAJour(xAvant, xApres, yAvant, yApres);
-                            caseApres.setIcon(caseAvant.getIcon());
-                            caseAvant.setIcon(null);
+                            deplacement(pieceAvant, xApres, yApres);
                         }
                     else    
                         System.out.println("Deplacement impossible");
@@ -78,20 +75,14 @@ public class Controller implements ActionListener{
                     if(pieceAvant.blanc){
                         if ((yAvant == yApres) && (xAvant == xApres+1))
                         {
-                            placement.misAJour(xAvant, xApres, yAvant, yApres);
-                            caseApres.setIcon(caseAvant.getIcon());
-                            caseAvant.setIcon(null);
-                            System.out.println("Pion avance en " + xApres + " " + yApres);
+                            deplacement(pieceAvant, xApres, yApres);
                         }
                         else System.out.println("Deplacement impossible en " + xApres + " " + yApres);
                     }
                     else
                         if ((yAvant == yApres) && (xAvant == xApres-1))
                         {
-                            placement.misAJour(xAvant, xApres, yAvant, yApres);
-                            caseApres.setIcon(caseAvant.getIcon());
-                            caseAvant.setIcon(null);
-                            System.out.println("Pion avance en " + xApres + " " + yApres);
+                            deplacement(pieceAvant, xApres, yApres);
                         }
                         else System.out.println("Deplacement impossible en " + xApres + " " + yApres);
                 }
@@ -106,21 +97,12 @@ public class Controller implements ActionListener{
                     if(pieceAvant.deplace(xApres,yApres))
                     {   
                         System.out.println("Deplacement autorise.");
-                        if(pieceApres == null)
-                            System.out.println(pieceAvant.nom + " va en " + xApres + " " + yApres);
-                        else
-                            System.out.println(pieceAvant.nom + " mange " + pieceApres.nom + " en " + xApres + " " + yApres);
-                        
                         if(obstacle(pieceAvant, xApres, yApres))
                             System.out.println("Mais il y a un obstacle..");
                         else
                         {
                             //Si tout est bon, on déplace la pièce
-                            placement.misAJour(xAvant, xApres, yAvant, yApres);
-                            caseApres.setIcon(caseAvant.getIcon());
-                            caseAvant.setIcon(null);
-                            System.out.println("Deplacement fait " + xApres + " " + yApres);
-                            placement.afficher();
+                            deplacement(pieceAvant, xApres, yApres);
                         }
                     }
                     else
@@ -138,6 +120,11 @@ public class Controller implements ActionListener{
 
     protected boolean obstacle(Piece p, int xAp, int yAp)
     {
+        Placement placement = this.parent.placement;
+        Piece[][] piece = this.parent.placement.plateau;
+        Piece p2 = null;
+        if (this.parent.placement.plateau[xAp][yAp] != null)
+            p2 = this.parent.placement.plateau[xAp][yAp];
         int X = xAp;
         int Y = yAp;
 
@@ -149,12 +136,12 @@ public class Controller implements ActionListener{
             {
                 //Si se déplace vers le haut
                 while(X > p.x){
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else X--;}
                 X = xAp;
                 //Si se déplace vers le bas
                 while(X < p.x){
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else X++;}
             }
             //Déplacement horizontal
@@ -162,11 +149,11 @@ public class Controller implements ActionListener{
             {
                 //Si se déplace vers la droite
                 while(Y > p.y){
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else Y--;}
                 Y = yAp;
                 while(Y < p.y){
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else Y++;}
             }
 
@@ -178,30 +165,46 @@ public class Controller implements ActionListener{
         {
             while(X>p.x){
                 while(Y>p.y)
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) 
-                        return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else {X--; Y--;}
                 while(Y<p.y)
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp]))
-                        return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else {X--; Y++;}
             }
             while(X<p.x){
                 while(Y>p.y)
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else {X++; Y--;}
                 while(Y<p.y)
-                    if((placement.plateau[X][Y] != null)&&(placement.plateau[X][Y] != placement.plateau[xAp][yAp])) return true;
+                    if((piece[X][Y] != null)&&(piece[X][Y] != p2)) return true;
                     else {X++; Y++;}
             }
         }
         return false;
     }
-    
-    protected boolean Victoire(int xAp,int yAp)
+ 
+    protected void deplacement(Piece p, int x, int y)
     {
-        if(placement.plateau[xAp][yAp]!=null && placement.plateau[xAp][yAp].nom=="Roi")
-            return true;
-        return false;
+        Piece piece = this.parent.placement.plateau[x][y];
+        if(piece!=null)
+            if(piece.nom=="Roi")
+                Victoire(p.blanc);
+            else
+                System.out.println(p.nom + " mange " + piece.nom + " en " + x + " " + y);
+        else
+            System.out.println(p.nom + " va en " + x + " " + y);
+        parent.placement.misAJour(p.x, x, p.y, y);
+        caseApres.setIcon(caseAvant.getIcon());
+        caseAvant.setIcon(null);
+        parent.placement.afficher();
     }
+    
+    protected void Victoire(boolean blanc)
+    {
+        if(blanc)
+            System.out.println("Victoire des blancs!");
+        else
+            System.out.println("Victoire des noirs !");
+    }
+
 }

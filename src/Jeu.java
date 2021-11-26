@@ -6,9 +6,9 @@ class Jeu implements Runnable {
 
     //Initialise, la fenetre, le controlleur et le placement des pièces.
     public Jeu(){
-        this.placement = new Placement();
-        this.controller = new Controller(placement);
-        this.plateau = new Plateau(placement, controller);
+        this.placement = new Placement(this);
+        this.controller = new Controller(this);
+        this.plateau = new Plateau(this);
     }
 
     public void run(){

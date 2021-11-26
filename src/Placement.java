@@ -1,9 +1,11 @@
 public class Placement {
     //Gère l'emplacement des différentes pièces via un tableu
     public Piece[][] plateau;
+    private Jeu parent;
 
     //Le constructeur initialise un tableau prédéfini
-    public Placement(){
+    public Placement(Jeu parent){
+        this.parent = parent;
         this.plateau = new Piece[7][8];
         initialiserPlateau();
     }

@@ -2,9 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Plateau extends JFrame{
+	Jeu parent;
 	//Gère la fenêtre et le plateau de base avec un echiquier composé de JButton
-	public Plateau(Placement p, Controller c){
-
+	public Plateau(Jeu parent){
+		this.parent = parent;
 		//On empêche la déformation car cela crée quelques problème sur le jeu
 		this.setSize(800, 700);
 		this.setTitle("Jeu d'Echecs");
@@ -23,8 +24,8 @@ public class Plateau extends JFrame{
 				JButton carreau = new JButton();
 				carreau.setPreferredSize(new Dimension(100,100));
 
-				if(p.plateau[x][y] != null){
-                    Image img = p.plateau[x][y].getImage();
+				if(parent.placement.plateau[x][y] != null){
+                    Image img = parent.placement.plateau[x][y].getImage();
                     carreau.setIcon(new ImageIcon(img));
                 }
 
@@ -37,7 +38,7 @@ public class Plateau extends JFrame{
 				{
 					carreau.setBackground(new Color(100,100,100));
 				}
-				carreau.addActionListener(c);
+				carreau.addActionListener(parent.controller);
 				pn.add(carreau);
 				blanc=!blanc;
 			}
