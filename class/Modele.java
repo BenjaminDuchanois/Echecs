@@ -167,6 +167,8 @@ public class Modele {
             default:
               this.plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc, parent);
           }
+
+          parent.vue.AffichePlateau(this.plateau);
     }
 
 

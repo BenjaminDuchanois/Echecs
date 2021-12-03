@@ -171,7 +171,7 @@ public class Vue extends JFrame {
         if(p.blanc)
             piecesDispo = parent.modele.cimetiereB.toArray(new String[0]);
         else
-            piecesDispo = parent.modele.cimetiereB.toArray(new String[0]);
+            piecesDispo = parent.modele.cimetiereN.toArray(new String[0]);
 
         int pieceChoisie = JOptionPane.showOptionDialog(this, "Choisissez une piece !", "Promotion.", 
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, piecesDispo, piecesDispo[0]);
@@ -181,7 +181,7 @@ public class Vue extends JFrame {
         if(p.blanc)
             parent.modele.cimetiereB.remove(pieceChoisie);
         else
-            parent.modele.cimetiereB.remove(pieceChoisie);
+            parent.modele.cimetiereN.remove(pieceChoisie);
 
         parent.modele.ChangePiece(p, piecePromue);
     }

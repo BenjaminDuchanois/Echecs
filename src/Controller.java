@@ -26,6 +26,8 @@ public class Controller implements ActionListener{
         Piece pieceAvant;
         Piece pieceApres;
 
+        
+
         //Si aucune pièce n'est séléctionné, on est sur le premier clique
         if(!selection){
             //On regarde quel bouton a été cliqué et on garde ses coordonnées
@@ -207,9 +209,9 @@ public class Controller implements ActionListener{
         this.tour = !tour; 
 
         int i;
-        //if(!tour)
-          //  i = parent.runn();
-        //else   
+        if(!tour)
+            i = parent.runn();
+        else   
             System.out.println("AUX BLANCS");
     }
     
