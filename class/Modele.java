@@ -135,6 +135,16 @@ public class Modele implements Serializable {
         if(!parent.controller.tour)
             JoueurVirtuel(plateau);
 
+        int tempsMax = 180;
+        int tempsRest = 60*parent.vue.minute + parent.vue.seconde - 1;
+        String couleur;
+        if(p.blanc)
+            couleur="blanc";
+        else
+            couleur="noir";
+        tempsRest = 180 - tempsRest;
+        System.out.println("Temps de jeu du joueur " + couleur + " : " + tempsRest + " sec");
+
         //Remet le chrono à 3 minutes
         parent.vue.ResetChrono();
     }
