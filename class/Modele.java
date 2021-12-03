@@ -130,6 +130,8 @@ public class Modele {
         //Du joueur virtuel
         if(!parent.controller.tour)
             JoueurVirtuel(this.plateau);
+
+        parent.vue.ResetChrono();
     }
 
 

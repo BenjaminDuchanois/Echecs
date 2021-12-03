@@ -1,13 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class Vue extends JFrame {
 
     private static final long serialVersionUID = 1111111;
 
+    //Contenu de la fenetre
     JPanel pn = new JPanel();
     Jeu parent;
     public int CASE_DIM = 75;
+
+    protected ActionListener tache_timer;
+    protected Timer timer;
+    protected int minute = 3, seconde;
+    protected int delais=1000;
     
 
     
@@ -26,6 +33,8 @@ public class Vue extends JFrame {
         AffichePlateau(parent.modele.plateau);
         
         setVisible(true);
+
+        Chrono();
     }
 
 
@@ -94,16 +103,32 @@ public class Vue extends JFrame {
 
                 //Si c'est une colonne d'une extrémité, alors gère les lettres de repère
                 else{
-                    jl = new JLabel(lettre[y]);
-                    jl.setOpaque(true);
-                    jl.setHorizontalAlignment(JLabel.CENTER);
-                    jl.setVerticalAlignment(JLabel.CENTER);
-                    jl.setBackground(new Color(49,46,43));
-                    if(x==0)
-                        jl.setForeground(new Color(49,46,43));
-                    else
+                    if((x==0)&&((y==4)||(y==3)))
+                    {
+                        if(y==3){
+                            jl = new JLabel(minute + " min");
+                            jl.setHorizontalAlignment(JLabel.RIGHT);}
+                        else{
+                            jl = new JLabel("  " + seconde + " s");
+                            jl.setHorizontalAlignment(JLabel.LEFT);}
+                        jl.setOpaque(true);
+                        jl.setVerticalAlignment(JLabel.CENTER);
+                        jl.setBackground(new Color(49,46,43));
                         jl.setForeground(new Color(255,255,255));
-                    pn.add(jl);
+                        pn.add(jl);
+                    }
+                    else{
+                        jl = new JLabel(lettre[y]);
+                        jl.setOpaque(true);
+                        jl.setHorizontalAlignment(JLabel.CENTER);
+                        jl.setVerticalAlignment(JLabel.CENTER);
+                        jl.setBackground(new Color(49,46,43));
+                        if(x==0)
+                            jl.setForeground(new Color(49,46,43));
+                        else
+                            jl.setForeground(new Color(255,255,255));
+                        pn.add(jl);
+                    }
                 }
 			}
 			blanc=!blanc;
@@ -132,9 +157,48 @@ public class Vue extends JFrame {
 
 
 
+    protected void Chrono()
+    {
+        ResetChrono();
+
+        //Créer le chronomètre
+        tache_timer = new ActionListener()  {
+            public void actionPerformed(ActionEvent e1)  {
+               seconde--;
+               if(seconde==-1)  {
+                    seconde=59;
+                    minute--;
+                }
+            //Refresh la vue
+            AffichePlateau(parent.modele.plateau);
+
+            if((minute==0)&&(seconde==0))
+                Fin(!parent.controller.tour);
+   
+           }
+       };
+
+        //Action et temps d'execution de la tache
+        timer = new Timer(delais, tache_timer);
+        
+        //Demarrer le chrono
+        timer.start();
+    }
+
+
+
+
+    protected void ResetChrono(){
+        minute = 3;
+        seconde = 1;
+    }
+
+
 
 
     public void Fin(boolean blanc){
+
+        timer.stop();
 
         String msg, title;
         String[] reponses = {"Rejouer", "Quitter"};
