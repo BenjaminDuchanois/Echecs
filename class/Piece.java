@@ -2,9 +2,9 @@ import java.io.IOException;
 import java.awt.Image;
 import java.io.File;
 import javax.imageio.ImageIO;
-//import placement.java;
+import java.io.*;
 
-public abstract class Piece{
+public abstract class Piece implements Serializable{
 	//Classe abstraite représentant toutes les Pièces par des coordonnées
 	//Un nom, une couleur et une image
 	protected int x;

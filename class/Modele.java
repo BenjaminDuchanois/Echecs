@@ -1,8 +1,9 @@
 import java.util.*;
+import java.io.*;
 
-public class Modele {
+public class Modele implements Serializable {
     //Gère l'emplacement des différentes pièces via un tableau
-    public Piece[][] plateau;
+    public static Piece[][] plateau;
     private Jeu parent;
     public List<String> cimetiereB, cimetiereN;
 
@@ -29,7 +30,7 @@ public class Modele {
 		    else if (i == 0 || i == 1) blanc = false;
             for (int j=0; j<8; j++){
                 if ((i==1) || (i==5))
-                    this.plateau[i][j] = new Pion(i, j, blanc, this.parent);
+                    this.plateau[i][j] = new Pion(i, j, blanc);
                 if ((i==0) || (i==6)){
                     if ((j==0) || (j==7))
                         this.plateau[i][j] = new Tour(i, j, blanc);
@@ -167,7 +168,7 @@ public class Modele {
               this.plateau[p.x][p.y] = new Reine(p.x, p.y, p.blanc);
               break;
             default:
-              this.plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc, parent);
+              this.plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc);
           }
 
           parent.vue.AffichePlateau(this.plateau);
@@ -305,5 +306,63 @@ public class Modele {
          }
          return false;
      }
+
+
+
+
+     //Serialisation pour la sauvegarde
+     protected void Sauvegarder(){
+         try{
+             //On stock tout dans un fichier save.data
+             FileOutputStream fos = new FileOutputStream("save.data");
+
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+             //On y met l'état actuel du plateau et du chrono
+             oos.writeObject(this.plateau);
+             oos.writeInt(parent.vue.minute);
+             oos.writeInt(parent.vue.seconde);
+
+             oos.close();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+         
+     }
+     
+
+
+
+     //On déserialise les données pour reprendre une partie
+     protected void Charger(){
+        try{
+            FileInputStream fis = new FileInputStream("save.data");
+
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            this.plateau = (Piece[][]) ois.readObject();
+            int min = ois.readInt();
+            int sec = ois.readInt();
+
+            //On remet le chrono à son état avant sauvegarde
+            parent.vue.SetChrono(min, sec);
+
+            ois.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //On réaffiche le plateau
+        parent.vue.AffichePlateau(this.plateau);
+     }
+     
+
+
 
 }

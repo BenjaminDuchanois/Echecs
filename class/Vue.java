@@ -46,9 +46,10 @@ public class Vue extends JFrame {
         //On vide le panel pour le refaire à chaque déplacement
         pn.removeAll();
 		pn.setLayout(new GridLayout(9,10));
-        boolean blanc = false;
+        boolean blanc = true;
         //Les lettre pour le repérage des cases
         String[] lettre = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        String couleur;
 
         //Les 7 lignes de l'échiquier et 2 pour le centrer
         for (int x=0; x<9; x++) 
@@ -88,8 +89,18 @@ public class Vue extends JFrame {
 
                     //Si le modèle indique qu'il y a une pièce, l'affiche
                     if(plateau[x-1][y] != null)
-                        carreau.setIcon(new ImageIcon(plateau[x-1][y].img));
+                    {
+                        //Copie sa couleur dans un text, pour retrouver le lien de son image
+                        if(plateau[x-1][y].blanc)
+                            couleur = "Blanc";
+                        else
+                            couleur = "Noir";
+                        //Trouve l'image correspondant grace à la couleur et au nom de la pièce
+                        carreau.setIcon(new ImageIcon(
+                            "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png"));
+                    }
                     else 
+                        //Si il n'y a pas de pièce, n'affiche rien
                         carreau.setIcon(null);
 
                     //Lie la case au controller
@@ -135,6 +146,7 @@ public class Vue extends JFrame {
 
             //Gère les marges
             jl = new JLabel("");
+            MonBouton jb = new MonBouton(x-1,8);
             jl.setOpaque(true);
             jl.setHorizontalAlignment(JLabel.CENTER);
             jl.setVerticalAlignment(JLabel.CENTER);
@@ -143,7 +155,29 @@ public class Vue extends JFrame {
                 jl.setForeground(new Color(255,255,255));
             else
                 jl.setForeground(new Color(49,46,43));
-            pn.add(jl);
+            if((x>2)&&(x<6)){
+                switch(x){
+                    case 3:
+                        jb.setText("Rejouer");
+                        break;
+                    case 4:
+                        jb.setText("Sauver");
+                        break;
+                    case 5:
+                        jb.setText("Charger");
+                        break;
+                    default:
+                        break;
+                }
+
+                jb.addActionListener(parent.controller);
+                jb.setBackground(new Color(49,46,43));
+                jb.setForeground(new Color(255,255,255));
+                jb.setBorder(BorderFactory.createLineBorder(new Color(49,46,43)));
+                pn.add(jb);
+            }
+            else
+                pn.add(jl);
 		}        
         //Ajoute une bordure au panel
         pn.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -196,6 +230,14 @@ public class Vue extends JFrame {
 
 
 
+    protected void SetChrono(int m, int s){
+        minute = m;
+        seconde = s;
+    }
+
+
+
+
     public void Fin(boolean blanc){
 
         timer.stop();
@@ -224,6 +266,32 @@ public class Vue extends JFrame {
         else
             this.dispose();
     }
+
+
+
+
+    protected void ConfirmationQuitter(){
+        String[] reponses = { "Quitter", "Retour au jeu" };
+        if(JOptionPane.showOptionDialog(this, "Voulez-vous vraiment quitter sans sauvegarder ?", "Quitter", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE, null, reponses, 0) == 0) 
+        {
+            this.dispose();
+        }
+    }
+
+
+
+
+    protected void ConfirmationRelance(){
+        String[] reponses = { "Nouvelle partie", "Retour" };
+        if(JOptionPane.showOptionDialog(this, "Voulez-vous vraiment recommencer une partie ?", "Rejouer", JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, reponses, 0) == 0) 
+        {
+            this.dispose();
+            new Jeu();
+        }
+    }
+
 
 
 

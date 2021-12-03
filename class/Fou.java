@@ -10,19 +10,6 @@ public class Fou extends Piece{
 	{
 		super(x, y, blanc);
 		this.nom = "Fou";
-		File input;
-		try
-		{
-			if(this.blanc) input = new File("../images/Fou_Blanc.png");
-			else input = new File("../images/Fou_Noir.png");
-			this.img = ImageIO.read(input);
-		} 
-
-		catch(IOException e) 
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	//Il se déplace en diagonal, donc si l'incrémentation de x et y

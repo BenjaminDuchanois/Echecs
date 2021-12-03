@@ -10,19 +10,6 @@ public class Roi extends Piece{
 	{
 		super(x, y, blanc);
 		this.nom = "Roi";
-		File input;
-		try
-		{
-			if(this.blanc) input = new File("../images/Roi_Blanc.png");
-			else input = new File("../images/Roi_Noir.png");
-			this.img = ImageIO.read(input);
-		} 
-
-		catch(IOException e) 
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 

@@ -10,19 +10,6 @@ public class Cavalier extends Piece{
 	{
 		super(x, y, blanc);
 		this.nom = "Cavalier";
-		File input;
-		try
-		{
-			if(this.blanc) input = new File("../images/Cavalier_Blanc.png");
-			else input = new File("../images/Cavalier_Noir.png");
-			this.img = ImageIO.read(input);
-		} 
-
-		catch(IOException e) 
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	//Son déplacement est possible que si il se déplace de 2 cases dans une direction

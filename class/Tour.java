@@ -10,19 +10,6 @@ public class Tour extends Piece{
 	{
 		super(x, y, blanc);
 		this.nom = "Tour";
-		File input;
-		try
-		{
-			if(this.blanc) input = new File("../images/Tour_Blanc.png");
-			else input = new File("../images/Tour_Noir.png");
-			this.img = ImageIO.read(input);
-		} 
-
-		catch(IOException e) 
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	//La tour se déplace en ligne, donc tant qu'elle reste soit sur la même

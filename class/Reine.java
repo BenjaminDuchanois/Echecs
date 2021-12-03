@@ -10,19 +10,6 @@ public class Reine extends Piece{
 	{
 		super(x, y, blanc);
 		this.nom = "Reine";
-		File input;
-		try
-		{
-			if(this.blanc) input = new File("../images/Reine_Blanc.png");
-			else input = new File("../images/Reine_Noir.png");
-			this.img = ImageIO.read(input);
-		} 
-
-		catch(IOException e) 
-		{
-			e.printStackTrace();
-		}
-
 	}
 
 	//La reine combine les déplacements de la tour et du fou
