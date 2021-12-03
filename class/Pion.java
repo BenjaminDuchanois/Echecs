@@ -3,7 +3,9 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.*;
 
-public class Pion extends Piece implements Serializable{
+public class Pion extends Piece {
+
+	private static final long serialVersionUID = 1L;
 
 	//Constructeur de la pièce Pion, gérant ses coordonnées et son image
 	public Pion(int x, int y, boolean blanc){

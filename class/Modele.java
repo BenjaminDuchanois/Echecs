@@ -2,10 +2,13 @@ import java.util.*;
 import java.io.*;
 
 public class Modele implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     //Gère l'emplacement des différentes pièces via un tableau
     public static Piece[][] plateau;
     private Jeu parent;
-    public List<String> cimetiereB, cimetiereN;
+    public ArrayList<String> cimetiereB, cimetiereN;
 
 
 
@@ -13,7 +16,7 @@ public class Modele implements Serializable {
     //Le constructeur initialise un tableau prédéfini
     public Modele(Jeu parent){
         this.parent = parent;
-        this.plateau = new Piece[7][8];
+        plateau = new Piece[7][8];
         this.cimetiereB = new ArrayList<String>();
         this.cimetiereN = new ArrayList<String>();
         initialiserPlateau();
@@ -22,7 +25,7 @@ public class Modele implements Serializable {
 
 
 
-    //On place les pions de la façon standart. La couleur des pièces est directement géré selon leur ligne.
+    //On place les pions de la façon standart.
     public void initialiserPlateau(){
         boolean blanc = true;
         for (int i=0; i<7; i++){
@@ -30,18 +33,18 @@ public class Modele implements Serializable {
 		    else if (i == 0 || i == 1) blanc = false;
             for (int j=0; j<8; j++){
                 if ((i==1) || (i==5))
-                    this.plateau[i][j] = new Pion(i, j, blanc);
+                    plateau[i][j] = new Pion(i, j, blanc);
                 if ((i==0) || (i==6)){
                     if ((j==0) || (j==7))
-                        this.plateau[i][j] = new Tour(i, j, blanc);
+                        plateau[i][j] = new Tour(i, j, blanc);
                     if ((j==1) || (j==6))
-                        this.plateau[i][j] = new Cavalier(i, j, blanc);
+                        plateau[i][j] = new Cavalier(i, j, blanc);
                     if ((j==2) || (j==5))
-                        this.plateau[i][j] = new Fou(i, j, blanc);
+                        plateau[i][j] = new Fou(i, j, blanc);
                     if (j==3)
-                        this.plateau[i][j] = new Reine(i, j, blanc);
+                        plateau[i][j] = new Reine(i, j, blanc);
                     if (j==4)
-                        this.plateau[i][j] = new Roi(i, j, blanc);
+                        plateau[i][j] = new Roi(i, j, blanc);
                 }
             }
         }
@@ -53,19 +56,19 @@ public class Modele implements Serializable {
     //Met à jour le tableau avec les coordonnées d'avant et après déplacement. 
     //Change également les coordonées de la pièce pour qu'elle puisse se déplacer de nouveau.
     protected void misAJour(int xAv, int xAp, int yAv, int yAp){
-        this.plateau[xAp][yAp] = this.plateau[xAv][yAv];
-        this.plateau[xAv][yAv] = null;
-        this.plateau[xAp][yAp].x = xAp;
-        this.plateau[xAp][yAp].y = yAp;
+        plateau[xAp][yAp] = plateau[xAv][yAv];
+        plateau[xAv][yAv] = null;
+        plateau[xAp][yAp].x = xAp;
+        plateau[xAp][yAp].y = yAp;
     }
 
 
 
-
+    //Test si le déplacement est possible par la piece
     protected void testDeplacement(Piece pieceAvant, int x, int y)
     {
         //On regarde la case de destination
-        Piece pieceApres = this.plateau[x][y];
+        Piece pieceApres = plateau[x][y];
 
         //Si elle est vide ou de la couleur de l'adversaire
         if((pieceApres == null)
@@ -80,7 +83,7 @@ public class Modele implements Serializable {
                     System.out.println("Mais il y a un obstacle..");
                 else
                 {
-                    if((pieceApres!=null)&&(pieceApres.nom!="Pion"))
+                    if((pieceApres!=null)&&(!pieceApres.nom.equals("Pion")))
                         if(pieceApres.blanc)
                             cimetiereB.add(pieceApres.nom);
                         else
@@ -100,10 +103,10 @@ public class Modele implements Serializable {
 
 
 
-
+    //Quand toutes les conditions sont remplies, effectue le déplacement de la piece
     protected void deplacement(Piece p, int x, int y)
     {
-        Piece piece = this.plateau[x][y];
+        Piece piece = plateau[x][y];
         
         //On met à jour le tableau, la piece selectionnée va au coordonnées ciblées
         misAJour(p.x, x, p.y, y);
@@ -117,28 +120,29 @@ public class Modele implements Serializable {
 
         //Si la piece de destination etait un roi, alors annonce la victoire
         if(piece!=null)
-            if(piece.nom=="Roi")
+            if(piece.nom.equals("Roi"))
                 Victoire(p.blanc);
             else
                 System.out.println(p.nom + " mange " + piece.nom + " en " + x + " " + y);
         else
             System.out.println(p.nom + " va en " + x + " " + y);
 
-        if(((x==0)||(x==6))&&(p.nom=="Pion"))
+        if(((x==0)||(x==6))&&(p.nom.equals("Pion")))
             Promotion(p);
 
         //Si c'est les blancs qui viennent de jouer, alors c'est au tour
         //Du joueur virtuel
         if(!parent.controller.tour)
-            JoueurVirtuel(this.plateau);
+            JoueurVirtuel(plateau);
 
+        //Remet le chrono à 3 minutes
         parent.vue.ResetChrono();
     }
 
 
 
 
-
+    //Si un pion arrive sur la bonne ligne, alors test si une promotion est possible
     protected void Promotion(Piece p){
 
         if(((p.blanc)&&(!cimetiereB.isEmpty()))
@@ -148,30 +152,30 @@ public class Modele implements Serializable {
     
 
 
-
+    //En cas de promotion, change le pion en la pièce choisie
     protected void ChangePiece(Piece p, String nom)
     {
         switch(nom) {
             case "Tour":
-              this.plateau[p.x][p.y] = new Tour(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Tour(p.x, p.y, p.blanc);
               break;
             case "Cavalier":
-              this.plateau[p.x][p.y] = new Cavalier(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Cavalier(p.x, p.y, p.blanc);
               break;
             case "Fou":
-              this.plateau[p.x][p.y] = new Fou(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Fou(p.x, p.y, p.blanc);
               break;
             case "Roi":
-              this.plateau[p.x][p.y] = new Roi(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Roi(p.x, p.y, p.blanc);
               break;
             case "Reine":
-              this.plateau[p.x][p.y] = new Reine(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Reine(p.x, p.y, p.blanc);
               break;
             default:
-              this.plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc);
+              plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc);
           }
 
-          parent.vue.AffichePlateau(this.plateau);
+          parent.vue.AffichePlateau(plateau);
     }
 
 
@@ -214,25 +218,25 @@ public class Modele implements Serializable {
         for (int x = 0; x < 7; x++) {
             System.out.print("|");
             for (int y = 0; y < 8; y++) {
-                if(this.plateau[x][y] == null) System.out.print("  |");
+                if(plateau[x][y] == null) System.out.print("  |");
                     else{
-                        if(plateau[x][y].nom == "Pion" && plateau[x][y].blanc == false) System.out.print("Pn|");
-                        if(plateau[x][y].nom == "Pion" && plateau[x][y].blanc == true) System.out.print("Pb|");
+                        if(plateau[x][y].nom.equals("Pion") && plateau[x][y].blanc == false) System.out.print("Pn|");
+                        if(plateau[x][y].nom.equals("Pion") && plateau[x][y].blanc == true) System.out.print("Pb|");
 
-                        if(plateau[x][y].nom == "Tour" && plateau[x][y].blanc == false) System.out.print("Tn|");
-                        if(plateau[x][y].nom == "Tour" && plateau[x][y].blanc == true) System.out.print("Tb|");
+                        if(plateau[x][y].nom.equals("Tour") && plateau[x][y].blanc == false) System.out.print("Tn|");
+                        if(plateau[x][y].nom.equals("Tour") && plateau[x][y].blanc == true) System.out.print("Tb|");
 
-                        if(plateau[x][y].nom == "Cavalier" && plateau[x][y].blanc == false) System.out.print("Cn|");
-                        if(plateau[x][y].nom == "Cavalier" && plateau[x][y].blanc == true) System.out.print("Cb|");
+                        if(plateau[x][y].nom.equals("Cavalier") && plateau[x][y].blanc == false) System.out.print("Cn|");
+                        if(plateau[x][y].nom.equals("Cavalier") && plateau[x][y].blanc == true) System.out.print("Cb|");
 
-                        if(plateau[x][y].nom == "Fou" && plateau[x][y].blanc == false) System.out.print("Fn|");
-                        if(plateau[x][y].nom == "Fou" && plateau[x][y].blanc == true) System.out.print("Fb|");
+                        if(plateau[x][y].nom.equals("Fou") && plateau[x][y].blanc == false) System.out.print("Fn|");
+                        if(plateau[x][y].nom.equals("Fou") && plateau[x][y].blanc == true) System.out.print("Fb|");
 
-                        if(plateau[x][y].nom == "Roi" && plateau[x][y].blanc == false) System.out.print("Rn|");
-                        if(plateau[x][y].nom == "Roi" && plateau[x][y].blanc == true) System.out.print("Rb|");
+                        if(plateau[x][y].nom.equals("Roi") && plateau[x][y].blanc == false) System.out.print("Rn|");
+                        if(plateau[x][y].nom.equals("Roi") && plateau[x][y].blanc == true) System.out.print("Rb|");
 
-                        if(plateau[x][y].nom == "Reine" && plateau[x][y].blanc == false) System.out.print("Qn|");
-                        if(plateau[x][y].nom == "Reine" && plateau[x][y].blanc == true) System.out.print("Qb|");
+                        if(plateau[x][y].nom.equals("Reine") && plateau[x][y].blanc == false) System.out.print("Qn|");
+                        if(plateau[x][y].nom.equals("Reine") && plateau[x][y].blanc == true) System.out.print("Qb|");
                     }
             }
             System.out.println();
@@ -245,7 +249,7 @@ public class Modele implements Serializable {
      //Vérifie si il y a des obstacle sur le chemin d'une pièce
      protected boolean obstacle(Piece p, int xAp, int yAp)
      {
-         Piece[][] piece = this.plateau;
+         Piece[][] piece = plateau;
          Piece p2 = null;
          if (piece[xAp][yAp] != null)
              p2 = piece[xAp][yAp];
@@ -254,7 +258,7 @@ public class Modele implements Serializable {
  
          //Si la piece déplacé est une tour ou une reine, alors vérifie si il y a un
          //obstacle sur la ligne de déplacement
-         if((p.nom == "Reine") || (p.nom == "Tour"))
+         if((p.nom.equals("Reine")) || (p.nom.equals("Tour")))
              //Déplacement vertical
              if(p.y == Y)
              {
@@ -285,7 +289,7 @@ public class Modele implements Serializable {
          //obstacle sur la diagonal de déplacement
          //On vérifie également que les x et y sont bien différents, pour ne pas créer de bug avec la 
          //Reine qui essaierait d'aller en ligne droite.
-         if(((p.nom == "Reine") || (p.nom == "Fou")) && (xAp - p.x != 0) && (yAp - p.y != 0))
+         if(((p.nom.equals("Reine")) || (p.nom.equals("Fou"))) && (xAp - p.x != 0) && (yAp - p.y != 0))
          {
              while(X>p.x){
                  while(Y>p.y)
@@ -319,7 +323,10 @@ public class Modele implements Serializable {
              ObjectOutputStream oos = new ObjectOutputStream(fos);
 
              //On y met l'état actuel du plateau et du chrono
-             oos.writeObject(this.plateau);
+             //Ainsi que des cimetières pour la promotion
+             oos.writeObject(plateau);
+             oos.writeObject(this.cimetiereB);
+             oos.writeObject(this.cimetiereN);
              oos.writeInt(parent.vue.minute);
              oos.writeInt(parent.vue.seconde);
 
@@ -341,12 +348,18 @@ public class Modele implements Serializable {
 
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            this.plateau = (Piece[][]) ois.readObject();
+            plateau = (Piece[][]) ois.readObject();
+            @SuppressWarnings("unchecked")
+            ArrayList<String> cB = (ArrayList<String>) ois.readObject();
+            @SuppressWarnings("unchecked")
+            ArrayList<String> cN = (ArrayList<String>) ois.readObject();
             int min = ois.readInt();
             int sec = ois.readInt();
 
             //On remet le chrono à son état avant sauvegarde
             parent.vue.SetChrono(min, sec);
+            this.cimetiereB = cB;
+            this.cimetiereN = cN;
 
             ois.close();
 
@@ -359,7 +372,7 @@ public class Modele implements Serializable {
         }
 
         //On réaffiche le plateau
-        parent.vue.AffichePlateau(this.plateau);
+        parent.vue.AffichePlateau(plateau);
      }
      
 

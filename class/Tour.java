@@ -5,6 +5,8 @@ import javax.imageio.ImageIO;
 
 public class Tour extends Piece{
 
+	private static final long serialVersionUID = 1L;
+
 	//Constructeur de la pièce tour, gérant ses coordonnées et son image
 	public Tour(int x, int y, boolean blanc)
 	{

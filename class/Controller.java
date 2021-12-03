@@ -12,8 +12,6 @@ public class Controller implements ActionListener {
     protected boolean selection, tour;
     private MonBouton caseAvant, caseApres;
     
-
-
     
     //On initalise la selection d'une pièce à faux
     public Controller(Jeu parent){
@@ -24,14 +22,16 @@ public class Controller implements ActionListener {
 
 
 
-
     //Lorsqu'un clic a lieu
     public void actionPerformed(ActionEvent ae){
 
         Piece pieceAvant;
         Piece pieceApres;
 
+        //Observe le bouton cliqué pour trouver ses coordonnées
         MonBouton caseClique = (MonBouton) ae.getSource();
+
+        //Gère les options à droite du plateau
         if(caseClique.getMonY()>7){
             switch(caseClique.getMonX())
             {
@@ -49,6 +49,7 @@ public class Controller implements ActionListener {
                     break;
             }
         }
+        //Gère le plateau
         else{
             //Si aucune pièce n'est séléctionné, on est sur le premier clique
             if(!selection){
@@ -58,7 +59,7 @@ public class Controller implements ActionListener {
                 yAvant = caseAvant.getMonY();
 
                 //Sert d'alias pour que le code soit plus lisible
-                pieceAvant = this.parent.modele.plateau[xAvant][yAvant];
+                pieceAvant = Modele.plateau[xAvant][yAvant];
 
                 //Si la case contient bien une pièce, on la selectionne
                 if(pieceAvant!=null)
@@ -84,7 +85,7 @@ public class Controller implements ActionListener {
                 caseApres = caseClique;
                 xApres = caseApres.getMonX();
                 yApres = caseApres.getMonY();
-                pieceAvant = this.parent.modele.plateau[xAvant][yAvant];
+                pieceAvant = Modele.plateau[xAvant][yAvant];
 
                 parent.modele.testDeplacement(pieceAvant, xApres, yApres);
 

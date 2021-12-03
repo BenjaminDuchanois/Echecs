@@ -5,6 +5,8 @@ import javax.imageio.ImageIO;
 
 public class Cavalier extends Piece{
 
+	private static final long serialVersionUID = 1L;
+
 	//Constructeur de la pièce cavalier, gérant ses coordonnées et son image
 	public Cavalier(int x, int y, boolean blanc)
 	{

@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-//Sert à donner un x et un y aux boutons pour les localiser
+//Sert à donner un x et un y aux boutons pour les localiser plus facilement
 public class MonBouton extends JButton {
   public int x, y;
 

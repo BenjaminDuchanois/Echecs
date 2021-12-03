@@ -9,11 +9,12 @@ public class Vue extends JFrame {
     //Contenu de la fenetre
     JPanel pn = new JPanel();
     Jeu parent;
+    //Taille d'une case (Tout est basé dessus et peut être modifié au choix)
     public int CASE_DIM = 75;
 
     protected ActionListener tache_timer;
     protected Timer timer;
-    protected int minute = 3, seconde;
+    protected int minute, seconde;
     protected int delais=1000;
     
 
@@ -22,7 +23,7 @@ public class Vue extends JFrame {
 
         this.parent = parent;
 
-        //Propriétés de la fenêtre
+        //Propriétés de base de la fenêtre
         setTitle("Jeu d'echecs");
         setSize(CASE_DIM*10, CASE_DIM*9);
         setResizable(false);
@@ -30,7 +31,7 @@ public class Vue extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground( new Color(49,46,43) );
 
-        AffichePlateau(parent.modele.plateau);
+        AffichePlateau(Modele.plateau);
         
         setVisible(true);
 
@@ -40,7 +41,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Affichage du plateau dans son état
     protected void AffichePlateau(Piece[][] plateau){
 
         //On vide le panel pour le refaire à chaque déplacement
@@ -112,8 +113,9 @@ public class Vue extends JFrame {
 
                 }
 
-                //Si c'est une colonne d'une extrémité, alors gère les lettres de repère
+                //Marge au dessus du plateau
                 else{
+                    //Affichage du chrono en haut (y 3 et 4)
                     if((x==0)&&((y==4)||(y==3)))
                     {
                         if(y==3){
@@ -128,6 +130,7 @@ public class Vue extends JFrame {
                         jl.setForeground(new Color(255,255,255));
                         pn.add(jl);
                     }
+                    //Reste de la marge du haut
                     else{
                         jl = new JLabel(lettre[y]);
                         jl.setOpaque(true);
@@ -144,7 +147,7 @@ public class Vue extends JFrame {
 			}
 			blanc=!blanc;
 
-            //Gère les marges
+            //Marge de droite
             jl = new JLabel("");
             MonBouton jb = new MonBouton(x-1,8);
             jl.setOpaque(true);
@@ -155,6 +158,8 @@ public class Vue extends JFrame {
                 jl.setForeground(new Color(255,255,255));
             else
                 jl.setForeground(new Color(49,46,43));
+
+            //Gère les options à droite du plateau
             if((x>2)&&(x<6)){
                 switch(x){
                     case 3:
@@ -190,11 +195,11 @@ public class Vue extends JFrame {
     }
 
 
-
+    //Gère le chronomètre
     protected void Chrono()
     {
         ResetChrono();
-
+        
         //Créer le chronomètre
         tache_timer = new ActionListener()  {
             public void actionPerformed(ActionEvent e1)  {
@@ -204,8 +209,9 @@ public class Vue extends JFrame {
                     minute--;
                 }
             //Refresh la vue
-            AffichePlateau(parent.modele.plateau);
+            AffichePlateau(Modele.plateau);
 
+            //Si le temps tombe à zéro, donne la victoire à l'adversaire
             if((minute==0)&&(seconde==0))
                 Fin(!parent.controller.tour);
    
@@ -221,7 +227,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Remet le chrono au temps de base
     protected void ResetChrono(){
         minute = 3;
         seconde = 1;
@@ -229,7 +235,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Met le chrono à un temps défini (Pratique pour la sauvegarde/charge)
     protected void SetChrono(int m, int s){
         minute = m;
         seconde = s;
@@ -237,7 +243,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Ecran de fin de partie
     public void Fin(boolean blanc){
 
         timer.stop();
@@ -246,17 +252,20 @@ public class Vue extends JFrame {
         String[] reponses = {"Rejouer", "Quitter"};
         ImageIcon ic;
 
+        //Si les blancs ont gagné
         if(blanc){
             msg = "Les blancs remportent la partie !";
             title = "Victoire !";
             ic = new ImageIcon("../images/Roi_Blanc.png");
         }
+        //Si les noirs ont gagné
         else{
             msg = "Les noirs remportent la partie !";
             title = "Defaite.";
             ic = new ImageIcon("../images/Roi_Noir.png");
         }
 
+        //Ouvre une pop-up qui propose de fermer ou relancer le jeu
         if(JOptionPane.showOptionDialog(this, msg, title, JOptionPane.YES_NO_OPTION,
             JOptionPane.INFORMATION_MESSAGE, ic, reponses, 0) == 0) 
         {
@@ -269,7 +278,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Demande si on est sur de vouloir quitter
     protected void ConfirmationQuitter(){
         String[] reponses = { "Quitter", "Retour au jeu" };
         if(JOptionPane.showOptionDialog(this, "Voulez-vous vraiment quitter sans sauvegarder ?", "Quitter", JOptionPane.YES_NO_OPTION,
@@ -281,7 +290,7 @@ public class Vue extends JFrame {
 
 
 
-
+    //Demande si on est sur de vouloir relancer la partie
     protected void ConfirmationRelance(){
         String[] reponses = { "Nouvelle partie", "Retour" };
         if(JOptionPane.showOptionDialog(this, "Voulez-vous vraiment recommencer une partie ?", "Rejouer", JOptionPane.YES_NO_OPTION,
@@ -294,12 +303,14 @@ public class Vue extends JFrame {
 
 
 
-
+    //Interface de choix de pion pour la promotion
     protected void PromotionPopup(Piece p)
     {
         String[] piecesDispo;
         String piecePromue;
 
+        //Si le pion est blanc, alors affiche toutes les pièces mortes dans une pop-up
+        //Et propose au joueur d'en choisir une à récuperer
         if(p.blanc){
             piecesDispo = parent.modele.cimetiereB.toArray(new String[0]);
 
@@ -308,13 +319,14 @@ public class Vue extends JFrame {
             piecePromue = piecesDispo[pieceChoisie];
             parent.modele.cimetiereB.remove(pieceChoisie);
         }
-            
+        //Si le pion est noir, le joueur virtuel en selectionne une par defaut
         else{
             piecesDispo = parent.modele.cimetiereN.toArray(new String[0]);
             piecePromue = piecesDispo[0];
             parent.modele.cimetiereN.remove(0);
         }
 
+        //Remplace le pion par la piece choisie
         parent.modele.ChangePiece(p, piecePromue);
     }
 

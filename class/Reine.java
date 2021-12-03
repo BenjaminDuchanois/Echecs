@@ -5,6 +5,8 @@ import javax.imageio.ImageIO;
 
 public class Reine extends Piece{
 
+	private static final long serialVersionUID = 1L;
+
 	//Constructeur de la pièce Reine, gérant ses coordonnées et son image
 	public Reine(int x, int y, boolean blanc)
 	{

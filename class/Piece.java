@@ -5,6 +5,9 @@ import javax.imageio.ImageIO;
 import java.io.*;
 
 public abstract class Piece implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	//Classe abstraite représentant toutes les Pièces par des coordonnées
 	//Un nom, une couleur et une image
 	protected int x;
