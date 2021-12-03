@@ -232,20 +232,20 @@ public class Vue extends JFrame {
         String[] piecesDispo;
         String piecePromue;
 
-        if(p.blanc)
+        if(p.blanc){
             piecesDispo = parent.modele.cimetiereB.toArray(new String[0]);
-        else
-            piecesDispo = parent.modele.cimetiereN.toArray(new String[0]);
 
-        int pieceChoisie = JOptionPane.showOptionDialog(this, "Choisissez une piece !", "Promotion.", 
+            int pieceChoisie = JOptionPane.showOptionDialog(this, "Choisissez une piece !", "Promotion.", 
             JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, piecesDispo, piecesDispo[0]);
-    
-        piecePromue = piecesDispo[pieceChoisie];
-
-        if(p.blanc)
+            piecePromue = piecesDispo[pieceChoisie];
             parent.modele.cimetiereB.remove(pieceChoisie);
-        else
-            parent.modele.cimetiereN.remove(pieceChoisie);
+        }
+            
+        else{
+            piecesDispo = parent.modele.cimetiereN.toArray(new String[0]);
+            piecePromue = piecesDispo[0];
+            parent.modele.cimetiereN.remove(0);
+        }
 
         parent.modele.ChangePiece(p, piecePromue);
     }
