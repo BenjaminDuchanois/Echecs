@@ -55,7 +55,7 @@ public class Vue extends JFrame {
 		{
             //La première colonne sert pour les chiffres
             JLabel jl;
-            jl = new JLabel(x + "");
+            jl = new JLabel(8-x + "");
             jl.setOpaque(true);
             jl.setHorizontalAlignment(JLabel.CENTER);
             jl.setVerticalAlignment(JLabel.CENTER);
