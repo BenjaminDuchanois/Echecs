@@ -14,7 +14,7 @@ public class Vue extends JFrame {
 
     protected ActionListener tache_timer;
     protected Timer timer;
-    protected int minute, seconde;
+    protected int minute = 3, seconde;
     protected int delais=1000;
     
 
@@ -98,8 +98,11 @@ public class Vue extends JFrame {
                         else
                             couleur = "Noir";
                         //Trouve l'image correspondant grace à la couleur et au nom de la pièce
-                        carreau.setIcon(new ImageIcon(
-                            "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png")); 
+                        // carreau.setIcon(new ImageIcon(
+                        //     "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png"));
+                        carreau.setIcon(new ImageIcon(new ImageIcon(
+                            "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png")
+                            .getImage().getScaledInstance(CASE_DIM, CASE_DIM, Image.SCALE_DEFAULT)));
                     }
                     else 
                         //Si il n'y a pas de pièce, n'affiche rien
