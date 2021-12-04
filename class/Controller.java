@@ -87,7 +87,8 @@ public class Controller implements ActionListener {
                 yApres = caseApres.getMonY();
                 pieceAvant = Modele.plateau[xAvant][yAvant];
 
-                parent.modele.testDeplacement(pieceAvant, xApres, yApres);
+                if(parent.modele.testDeplacement(pieceAvant, xApres, yApres))
+                    parent.modele.deplacement(pieceAvant, xApres, yApres);
 
                 selection = !selection;
 

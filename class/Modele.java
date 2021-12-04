@@ -65,7 +65,7 @@ public class Modele implements Serializable {
 
 
     //Test si le déplacement est possible par la piece
-    protected void testDeplacement(Piece pieceAvant, int x, int y)
+    protected boolean testDeplacement(Piece pieceAvant, int x, int y)
     {
         //On regarde la case de destination
         Piece pieceApres = plateau[x][y];
@@ -90,7 +90,8 @@ public class Modele implements Serializable {
                             cimetiereN.add(pieceApres.nom);
 
                     //Alors on accepte le déplacement
-                    deplacement(pieceAvant, x, y);
+                    return true;
+                    //deplacement(pieceAvant, x, y);
                 }
             }
             else
@@ -99,6 +100,7 @@ public class Modele implements Serializable {
         }
         else    //Sinon on indique une erreur
                 System.out.println("Cette piece est a vous " + x + " " + y);
+        return false;
     }
 
 
@@ -191,20 +193,79 @@ public class Modele implements Serializable {
 
 
     public void JoueurVirtuel(Piece[][] plateau){
-        int xCible, yCible;
-        Random random = new Random();
-        int xNb, yNb, xNbApres, yNbApres;
-        while(!parent.controller.tour)
-        {
-            xNb = random.nextInt(7);
-            yNb = random.nextInt(6);
-            if((plateau[xNb][yNb] != null)&&(!plateau[xNb][yNb].blanc))
-                {
-                    xNbApres = random.nextInt(7);
-                    yNbApres = random.nextInt(6);
-                    testDeplacement(plateau[xNb][yNb], xNbApres, yNbApres);
-                }
-        }
+        //MP = Meilleure Piece MC = Meilleur Coup
+        int xMP = -1, yMP = -1, xMC = -1, yMC = -1, valC = -1, valMC = -1;
+        for (int xP=0; xP<7; xP++)
+            for (int yP=0; yP<8; yP++)
+                //Si c'est une piece noir, examine tout ses coups
+                if ((plateau[xP][yP]!=null)&&(!plateau[xP][yP].blanc))
+                    for (int xC=0; xC<7; xC++)
+                        for (int yC=0; yC<8; yC++) 
+                            //Si le coup est légal
+                            if(testDeplacement(plateau[xP][yP], xC, yC))
+                            {
+                                //Si la cible est une pièce adverse alors
+                                if((plateau[xC][yC]!=null)&&(plateau[xC][yC].blanc))
+                                {
+                                    //Donne une valeur au coup selon la cible possible
+                                    switch(plateau[xC][yC].nom){
+                                        case "Pion":
+                                            valC = 10;
+                                            break;
+                                        case "Cavalier":
+                                            valC = 30;
+                                            break;
+                                        case "Fou":
+                                            valC = 30;
+                                            break;
+                                        case "Tour":
+                                            valC = 50;
+                                            break;
+                                        case "Reine":
+                                            valC = 100;
+                                            break;
+                                        case "Roi":
+                                            valC = 100000;
+                                            break;
+                                        default:
+                                            valC = 0;
+                                            break;
+                                    }
+                                }
+                                //Si la cible est vide, le coup vaut 0;
+                                else
+                                    valC = 0;
+                                //Si la valeur du coup est meilleure que celle du meilleur coup
+                                //Alors ce coup est enregistré comme étant le meilleur
+                                if(valC > valMC)
+                                {
+                                    valMC = valC;
+                                    xMP = xP;
+                                    yMP = yP;
+                                    xMC = xC;
+                                    yMC = yC;
+                                }
+                            }
+        if(valMC == -1)
+            System.out.println("Erreur, aucun coup trouvé..");
+        else
+            //Une fois tous les coups examinés, exécute celui retenu comme étant le meilleur
+            deplacement(plateau[xMP][yMP], xMC, yMC);
+        // int xCible, yCible;
+        // Random random = new Random();
+        // int xNb, yNb, xNbApres, yNbApres;
+        // while(!parent.controller.tour)
+        // {
+        //     xNb = random.nextInt(7);
+        //     yNb = random.nextInt(6);
+        //     if((plateau[xNb][yNb] != null)&&(!plateau[xNb][yNb].blanc))
+        //         {
+        //             xNbApres = random.nextInt(7);
+        //             yNbApres = random.nextInt(6);
+        //             if(testDeplacement(plateau[xNb][yNb], xNbApres, yNbApres))
+        //                 deplacement(plateau[xNb][yNb], xNbApres, yNbApres);
+        //         }
+        // }
     }
 
 
