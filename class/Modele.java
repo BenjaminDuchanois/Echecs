@@ -80,12 +80,6 @@ public class Modele implements Serializable {
                 //Et qu'il n'y a pas d'obstacle sur le chemin
                 if(!obstacle(pieceAvant, x, y))
                 {
-                    if((pieceApres!=null)&&(!pieceApres.nom.equals("Pion")))
-                        if(pieceApres.blanc)
-                            cimetiereB.add(pieceApres.nom);
-                        else
-                            cimetiereN.add(pieceApres.nom);
-
                     //Alors on accepte le déplacement
                     return true;
                     //deplacement(pieceAvant, x, y);
@@ -101,6 +95,12 @@ public class Modele implements Serializable {
     protected void deplacement(Piece p, int x, int y)
     {
         Piece piece = plateau[x][y];
+
+        if((piece!=null)&&(!piece.nom.equals("Pion")))
+            if(piece.blanc)
+                cimetiereB.add(piece.nom);
+            else
+                cimetiereN.add(piece.nom);
         
         //On met à jour le tableau, la piece selectionnée va au coordonnées ciblées
         misAJour(p.x, x, p.y, y);
@@ -184,19 +184,27 @@ public class Modele implements Serializable {
 
 
 
+    //Déplace des pièces sur un plateau non visible
     protected Piece deplaceVirtuellement(Coup c, Piece[][] p){
+        //On stock le contenu de la case cible
         Piece pieceStock = p[c.x][c.y];
+        //On echange les cases de départ et d'arrivée
         p[c.x][c.y] = p[c.p.x][c.p.y];
         p[c.p.x][c.p.y] = null;
+        //On retourne le contenu pour pouvoir annuler le déplacement
         return pieceStock;
     }
 
+    //Annule un coup sur un plateau non visible
     protected void defaitVirtuellement(Coup c, Piece[][] p, Piece pieceStock){
+        //On remet la piece à sa place initiale
         p[c.p.x][c.p.y] = p[c.x][c.y];
+        //On remet la piece stockée à sa place
         p[c.x][c.y] = pieceStock;
     }
 
 
+    //Calcul la valeur d'un plateau donné
     protected int calculValeur(Piece[][] p){
         int valTot = 0, val = 0;
         //Regarde toutes les cases du plateau
@@ -221,7 +229,7 @@ public class Modele implements Serializable {
                             val = 100;
                             break;
                         case "Roi":
-                            val = 1000;
+                            val = 5000;
                             break;
                         default:
                             val = 0;
@@ -238,13 +246,14 @@ public class Modele implements Serializable {
     }
 
 
+    //Algo MiniMax
     protected IntCoup MiniMax(Piece [][] plateauTest, int profondeur, boolean tourNoir, Coup cp){
         Piece pieceStock;
         IntCoup val;
         int valMax;
         ArrayList<Coup> listeCoup = new ArrayList<Coup>();
 
-        //Au plus profond on calcul la valeur et on la remonte.
+        //Au plus profond on calcul la valeur du plateau obtenu et on la remonte.
         if(profondeur == 0)
             return new IntCoup(calculValeur(plateauTest),cp);
 
@@ -254,33 +263,39 @@ public class Modele implements Serializable {
         //Si c'est l'IA, fixe la valeur très bas par défaut puis descend en profondeur en regardant le joueur
         if(tourNoir)
         {
+            //Fixe la valeur très bas
             val = new IntCoup(-10000,cp);
             valMax = -10000;
+            //Pour chaque coup possible
             for(Coup coupNoir : listeCoup)
             {
                 //Effectue le coup, puis descend en profondeur
                 pieceStock = deplaceVirtuellement(coupNoir, plateauTest);
                 valMax = Math.max(val.i, MiniMax(plateauTest, profondeur-1, false, coupNoir).i);
+                //stock la valeur max trouvée et le coup correspondant
                 if(valMax>val.i){
                     val.coup = coupNoir;
                     val.i = valMax;
                 }
+                //Defait le coup testé
                 defaitVirtuellement(coupNoir, plateauTest, pieceStock);
-                System.out.println("Coup noir :" + coupNoir.x + coupNoir.y);
             } 
-            //Retourne la valeur au niveau au dessus
+            //Retourne la valeur et le coup trouvé au niveau au dessus
             return val;
         }
         //Si c'est le joueur blanc, fixe la valeur très haut puis descend en regardant les coups de l'IA
         else
         {
+            //Fixe la valeur très haut
             val = new IntCoup(10000,cp);
             valMax = 10000;
+            //Pour chaque coup possible
             for(Coup coupBlanc : listeCoup)
             {
                 //Effectue le coup, puis descend en profondeur
                 pieceStock = deplaceVirtuellement(coupBlanc, plateauTest);
                 valMax = Math.min(val.i, MiniMax(plateauTest, profondeur-1, true, coupBlanc).i);
+                //stock la valeur minimum trouvée et le coup correspondant
                 if(valMax<val.i){
                     val.coup = coupBlanc;
                     val.i = valMax;
@@ -288,32 +303,106 @@ public class Modele implements Serializable {
                 //Defait le coup
                 defaitVirtuellement(coupBlanc, plateauTest, pieceStock);
             } 
-            //Retourne la valeur au niveau au dessus
+            //Retourne la valeur et le coup trouvé au niveau au dessus
             return val;
         }
     }
 
 
+    protected IntCoup AlphaBeta(Piece[][] plateauTest, int profondeur, int alpha, int beta, boolean tourNoir, Coup cp){
+        Piece pieceStock;
+        IntCoup val;
+        int valMax;
+        ArrayList<Coup> listeCoup = new ArrayList<Coup>();
+
+        //Au plus profond on calcul la valeur du plateau obtenu et on la remonte.
+        if(profondeur == 0)
+            return new IntCoup(calculValeur(plateauTest),cp);
+
+        //Regarde la liste des coups possible pour le joueur dont c'est le tour
+        listeCoup = getCoupsPossibles(plateauTest, tourNoir);
+
+        //Si c'est l'IA, fixe la valeur très bas par défaut puis descend en profondeur en regardant le joueur
+        if(tourNoir)
+        {
+            //Fixe la valeur très bas
+            val = new IntCoup(-10000,cp);
+            valMax = -10000;
+            //Pour chaque coup possible
+            for(Coup coupNoir : listeCoup)
+            {
+                //Effectue le coup, puis descend en profondeur
+                pieceStock = deplaceVirtuellement(coupNoir, plateauTest);
+                valMax = Math.max(val.i, AlphaBeta(plateauTest, profondeur-1, alpha, beta, false, coupNoir).i);
+                //stock la valeur max trouvée et le coup correspondant
+                if(valMax>val.i){
+                    val.coup = coupNoir;
+                    val.i = valMax;
+                }
+                //Defait le coup testé
+                defaitVirtuellement(coupNoir, plateauTest, pieceStock);
+                alpha = Math.max(alpha,val.i);
+                if(val.i>=beta)
+                    break;
+            } 
+            //Retourne la valeur et le coup trouvé au niveau au dessus
+            return val;
+        }
+        //Si c'est le joueur blanc, fixe la valeur très haut puis descend en regardant les coups de l'IA
+        else
+        {
+            //Fixe la valeur très haut
+            val = new IntCoup(10000,cp);
+            valMax = 10000;
+            //Pour chaque coup possible
+            for(Coup coupBlanc : listeCoup)
+            {
+                //Effectue le coup, puis descend en profondeur
+                pieceStock = deplaceVirtuellement(coupBlanc, plateauTest);
+                valMax = Math.min(val.i, AlphaBeta(plateauTest, profondeur-1, alpha, beta, true, coupBlanc).i);
+                //stock la valeur minimum trouvée et le coup correspondant
+                if(valMax<val.i){
+                    val.coup = coupBlanc;
+                    val.i = valMax;
+                }
+                //Defait le coup
+                defaitVirtuellement(coupBlanc, plateauTest, pieceStock);
+                beta = Math.min(beta,val.i);
+                if(val.i<=alpha)
+                    break;
+            } 
+            //Retourne la valeur et le coup trouvé au niveau au dessus
+            return val;
+        }
+    }
+
+
+
     public void JoueurVirtuel(){
 
+        //Initialise la couleur à celle de l'IA
         boolean couleur = true;
+        //Crée une copie du plateau sur laquelle l'IA va faire des tests
         Piece[][] plateauTest = plateau;
-        Coup meilleurCoup = null;
+        //Contiendra la valeur max du plateau possible après les coups
+        //Ainsi que les coups correspondants
         IntCoup valMax;
 
-        int profondeur = 4;
+        //Définit la profondeur, plus ce sera grand, plus l'IA sera intelligente
+        //Mais fera de calculs (De façon exponentielle)
+        int profondeur = 5;
 
 
-        valMax = MiniMax(plateauTest, profondeur, couleur, null);
-
-        System.out.println(valMax.i + " : ");
+        //Lance l'algo MiniMax et retient le meilleur coup possible
+        //valMax = MiniMax(plateauTest, profondeur, couleur, null);
+        valMax = AlphaBeta(plateauTest, profondeur, -10000, 10000, couleur, null);
 
         //Joue le meilleur coup trouvé
         deplacement(valMax.coup.p, valMax.coup.x, valMax.coup.y);
     }
 
 
-
+    //Retourne la liste des coups possible selon la couleur du joueur sous forme de liste
     protected ArrayList<Coup> getCoupsPossibles(Piece[][] p, boolean IA){
         ArrayList<Coup> coups = new ArrayList<Coup>();
         for (int xP=0; xP<7; xP++)
@@ -324,6 +413,7 @@ public class Modele implements Serializable {
                         for (int yC=0; yC<8; yC++) 
                             //Si le coup est légal
                             if(testDeplacement(p[xP][yP], xC, yC))
+                                //L'ajoute à la liste
                                 coups.add(new Coup(p[xP][yP], xC, yC));}
                 else
                     if ((p[xP][yP]!=null)&&(p[xP][yP].blanc)&&(!IA)){
@@ -331,7 +421,9 @@ public class Modele implements Serializable {
                             for (int yC=0; yC<8; yC++) 
                                 //Si le coup est légal
                                 if(testDeplacement(p[xP][yP], xC, yC))
+                                    //L'ajoute à la liste
                                     coups.add(new Coup(p[xP][yP], xC, yC));}
+        //Retourne la liste
         return coups;
     }
 
