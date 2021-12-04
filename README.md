@@ -35,11 +35,5 @@ Check :
     Commentaires à jour
     IA Prend la meilleur pièce blanche quand elle peut.
     L'IA s'exerce sur un plateau virtuel
-
-A faire :
-    Joueur virtuel intelligent.
-    Profondeur améliorée.
-
-PS : Beaucoup d'affichage sur console se font pour donner une indication
-    de ce qu'il se passe, mais ça finira par être retiré. Si il y a beaucoup de
-    messages répétés ce n'est pas un problème
+    L'algo MiniMax est fonctionnel
+    L'algo AlphaBeta est fonctionnel

@@ -112,14 +112,25 @@ public class Modele implements Serializable {
         //On change le tour, c'est à l'autre joueur de jouer
         parent.controller.tour = !parent.controller.tour; 
 
+        String couleur, autreCouleur;
+
+        if(p.blanc){
+            couleur = " blanc";
+            autreCouleur = " noir";
+        }
+        else{
+            couleur = " noir";
+            autreCouleur = " blanc";
+        }
+
         //Si la piece de destination etait un roi, alors annonce la victoire
         if(piece!=null)
             if(piece.nom.equals("Roi"))
                 Victoire(p.blanc);
             else
-                System.out.println(p.nom + " mange " + piece.nom + " en " + x + " " + y);
+                System.out.println(p.nom + couleur + " mange " + piece.nom + autreCouleur + " en " + x + " " + y);
         else
-            System.out.println(p.nom + " va en " + x + " " + y);
+            System.out.println(p.nom + couleur + " va en " + x + " " + y);
 
         if(((x==0)||(x==6))&&(p.nom.equals("Pion")))
             Promotion(p);
@@ -131,13 +142,9 @@ public class Modele implements Serializable {
 
         int tempsMax = 180;
         int tempsRest = 60*parent.vue.minute + parent.vue.seconde - 1;
-        String couleur;
-        if(!p.blanc)
-            couleur="blanc";
-        else
-            couleur="noir";
+
         tempsRest = 180 - tempsRest;
-        System.out.println("Temps de jeu du joueur " + couleur + " : " + tempsRest + " sec");
+        System.out.println("Temps de jeu du joueur " + autreCouleur + " : " + tempsRest + " sec");
 
         //Remet le chrono à 3 minutes
         parent.vue.ResetChrono();
