@@ -309,6 +309,7 @@ public class Modele implements Serializable {
     }
 
 
+    //Algo AlphaBeta, même principe que MiniMax mais en évitant quelques test inutiles
     protected IntCoup AlphaBeta(Piece[][] plateauTest, int profondeur, int alpha, int beta, boolean tourNoir, Coup cp){
         Piece pieceStock;
         IntCoup val;
