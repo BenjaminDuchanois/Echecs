@@ -342,6 +342,7 @@ public class Modele implements Serializable {
                 }
                 //Defait le coup testé
                 defaitVirtuellement(coupNoir, plateauTest, pieceStock);
+                //Si la valeur est supérieur au beta trouvé, alors inutile de continuer
                 alpha = Math.max(alpha,val.i);
                 if(val.i>=beta)
                     break;
@@ -369,6 +370,7 @@ public class Modele implements Serializable {
                 //Defait le coup
                 defaitVirtuellement(coupBlanc, plateauTest, pieceStock);
                 beta = Math.min(beta,val.i);
+                //Si la valeur est inférieur au alpha trouvé, alors inutile de continuer
                 if(val.i<=alpha)
                     break;
             } 
@@ -395,6 +397,7 @@ public class Modele implements Serializable {
 
 
         //Lance l'algo MiniMax et retient le meilleur coup possible
+
         //valMax = MiniMax(plateauTest, profondeur, couleur, null);
         valMax = AlphaBeta(plateauTest, profondeur, -10000, 10000, couleur, null);
 
