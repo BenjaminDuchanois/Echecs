@@ -99,7 +99,7 @@ public class Vue extends JFrame {
                             couleur = "Noir";
                         //Trouve l'image correspondant grace à la couleur et au nom de la pièce
                         carreau.setIcon(new ImageIcon(
-                            "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png"));
+                            "../images/" + plateau[x-1][y].nom + "_" + couleur + ".png")); 
                     }
                     else 
                         //Si il n'y a pas de pièce, n'affiche rien

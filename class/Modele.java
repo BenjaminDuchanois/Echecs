@@ -109,10 +109,14 @@ public class Modele implements Serializable {
         afficher();
         parent.vue.AffichePlateau();
 
+        if(((x==0)||(x==6))&&(p.nom.equals("Pion")))
+            Promotion(p);
+
         //On change le tour, c'est à l'autre joueur de jouer
         parent.controller.tour = !parent.controller.tour; 
 
         String couleur, autreCouleur;
+        String[] lettre = {"A", "B", "C", "D", "E", "F", "G", "H"};
 
         if(p.blanc){
             couleur = " blanc";
@@ -130,16 +134,10 @@ public class Modele implements Serializable {
             else
                 System.out.println(p.nom + couleur + " mange " + piece.nom + autreCouleur + " en " + x + " " + y);
         else
-            System.out.println(p.nom + couleur + " va en " + x + " " + y);
+            System.out.println(p.nom + couleur + " va en " + lettre[y] + (7-x));
 
-        if(((x==0)||(x==6))&&(p.nom.equals("Pion")))
-            Promotion(p);
 
-        //Si c'est les blancs qui viennent de jouer, alors c'est au tour
-        //Du joueur virtuel
-        if(!parent.controller.tour)
-            JoueurVirtuel();
-
+        //Calcul le temps de jeu et l'affiche
         int tempsMax = 180;
         int tempsRest = 60*parent.vue.minute + parent.vue.seconde - 1;
 
@@ -148,6 +146,11 @@ public class Modele implements Serializable {
 
         //Remet le chrono à 3 minutes
         parent.vue.ResetChrono();
+
+        //Si c'est les blancs qui viennent de jouer, alors c'est au tour
+        //Du joueur virtuel
+        if(!parent.controller.tour)
+            JoueurVirtuel();
     }
 
 
@@ -408,8 +411,13 @@ public class Modele implements Serializable {
         //valMax = MiniMax(plateauTest, profondeur, couleur, null);
         valMax = AlphaBeta(plateauTest, profondeur, -10000, 10000, couleur, null);
 
-        //Joue le meilleur coup trouvé
-        deplacement(valMax.coup.p, valMax.coup.x, valMax.coup.y);
+        if(valMax.coup.p == null){
+            System.out.println("Aucun coup possible");
+            parent.vue.Fin(true);
+        }
+        else   
+            //Joue le meilleur coup trouvé
+            deplacement(valMax.coup.p, valMax.coup.x, valMax.coup.y);
     }
 
 
