@@ -33,6 +33,8 @@ Check :
     Ajout d'options et de sauvegarde avec serialisation.
     Correction de bugs, normalement tout est bon !
     Commentaires à jour
+    IA Prend la meilleur pièce blanche quand elle peut.
+    L'IA s'exerce sur un plateau virtuel
 
 A faire :
     Joueur virtuel intelligent.

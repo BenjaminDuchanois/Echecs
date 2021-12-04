@@ -31,7 +31,7 @@ public class Vue extends JFrame {
         setLocationRelativeTo(null);
         getContentPane().setBackground( new Color(49,46,43) );
 
-        AffichePlateau(Modele.plateau);
+        AffichePlateau();
         
         setVisible(true);
 
@@ -42,7 +42,7 @@ public class Vue extends JFrame {
 
 
     //Affichage du plateau dans son état
-    protected void AffichePlateau(Piece[][] plateau){
+    protected void AffichePlateau(){
 
         //On vide le panel pour le refaire à chaque déplacement
         pn.removeAll();
@@ -51,6 +51,7 @@ public class Vue extends JFrame {
         //Les lettre pour le repérage des cases
         String[] lettre = {"A", "B", "C", "D", "E", "F", "G", "H"};
         String couleur;
+        Piece[][] plateau = Modele.plateau;
 
         //Les 7 lignes de l'échiquier et 2 pour le centrer
         for (int x=0; x<9; x++) 
@@ -209,7 +210,7 @@ public class Vue extends JFrame {
                     minute--;
                 }
             //Refresh la vue
-            AffichePlateau(Modele.plateau);
+            AffichePlateau();
 
             //Si le temps tombe à zéro, donne la victoire à l'adversaire
             if((minute==0)&&(seconde==0))

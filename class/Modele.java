@@ -114,8 +114,8 @@ public class Modele implements Serializable {
         misAJour(p.x, x, p.y, y);
 
         //On affiche alors le plateau modifié
-        afficher(plateau);
-        parent.vue.AffichePlateau(plateau);
+        afficher();
+        parent.vue.AffichePlateau();
 
         //On change le tour, c'est à l'autre joueur de jouer
         parent.controller.tour = !parent.controller.tour; 
@@ -135,7 +135,7 @@ public class Modele implements Serializable {
         //Si c'est les blancs qui viennent de jouer, alors c'est au tour
         //Du joueur virtuel
         if(!parent.controller.tour)
-            JoueurVirtuel(plateau);
+            JoueurVirtuel();
 
         int tempsMax = 180;
         int tempsRest = 60*parent.vue.minute + parent.vue.seconde - 1;
@@ -187,14 +187,92 @@ public class Modele implements Serializable {
               plateau[p.x][p.y] = new Pion(p.x, p.y, p.blanc);
           }
 
-          parent.vue.AffichePlateau(plateau);
+          parent.vue.AffichePlateau();
     }
 
 
 
-    public void JoueurVirtuel(Piece[][] plateau){
-        //MP = Meilleure Piece MC = Meilleur Coup
-        int xMP = -1, yMP = -1, xMC = -1, yMC = -1, valC = -1, valMC = -1;
+    protected Piece deplaceVirtuellement(Coup c, Piece[][] p){
+        Piece pieceStock = p[c.x][c.y];
+        p[c.x][c.y] = p[c.p.x][c.p.y];
+        p[c.p.x][c.p.y] = null;
+        return pieceStock;
+    }
+
+    protected void defaitVirtuellement(Coup c, Piece[][] p, Piece pieceStock){
+        p[c.p.x][c.p.y] = p[c.x][c.y];
+        p[c.x][c.y] = pieceStock;
+    }
+
+
+    protected int calculValeur(Piece[][] p){
+        int valTot = 0, val = 0;
+        //Regarde toutes les cases du plateau
+        for(int x=0; x<7; x++)
+            for(int y=0; y<8; y++)
+                //Si il y a une piece, donne sa valeur
+                if(p[x][y]!=null){
+                    switch(p[x][y].nom){
+                        case "Pion":
+                            val = 10;
+                            break;
+                        case "Cavalier":
+                            val = 30;
+                            break;
+                        case "Fou":
+                            val = 30;
+                            break;
+                        case "Tour":
+                            val = 50;
+                            break;
+                        case "Reine":
+                            val = 100;
+                            break;
+                        case "Roi":
+                            val = 1000;
+                            break;
+                        default:
+                            val = 0;
+                            break;
+                    }
+                    //Si c'est une piece blanche, la soustrait au total
+                    if(p[x][y].blanc)
+                        valTot -= val;
+                    //Si c'est une piece noir, l'ajoute
+                    else
+                        valTot += val;
+                }
+        return valTot;
+    }
+
+
+    public void JoueurVirtuel(){
+
+        ArrayList<Coup> listeCoup = getCoupsPossibles();
+        Piece[][] plateauTest = plateau;
+        Piece pieceStock;
+        int val, valMax = -1000;
+        Coup meilleurCoup = null;
+
+        //Pour chaque coup dans la liste
+        for(Coup coup : listeCoup){
+            //Test le déplacement sur un faux plateau puis calcul sa valeur
+            pieceStock = deplaceVirtuellement(coup, plateauTest);
+            val = calculValeur(plateauTest);
+            defaitVirtuellement(coup, plateauTest, pieceStock);
+            if(val>valMax){
+                valMax=val;
+                meilleurCoup = coup;
+            } 
+        }
+
+        deplacement(meilleurCoup.p, meilleurCoup.x, meilleurCoup.y);
+    }
+
+
+
+    protected ArrayList<Coup> getCoupsPossibles(){
+        ArrayList<Coup> coups = new ArrayList<Coup>();
         for (int xP=0; xP<7; xP++)
             for (int yP=0; yP<8; yP++)
                 //Si c'est une piece noir, examine tout ses coups
@@ -203,73 +281,9 @@ public class Modele implements Serializable {
                         for (int yC=0; yC<8; yC++) 
                             //Si le coup est légal
                             if(testDeplacement(plateau[xP][yP], xC, yC))
-                            {
-                                //Si la cible est une pièce adverse alors
-                                if((plateau[xC][yC]!=null)&&(plateau[xC][yC].blanc))
-                                {
-                                    //Donne une valeur au coup selon la cible possible
-                                    switch(plateau[xC][yC].nom){
-                                        case "Pion":
-                                            valC = 10;
-                                            break;
-                                        case "Cavalier":
-                                            valC = 30;
-                                            break;
-                                        case "Fou":
-                                            valC = 30;
-                                            break;
-                                        case "Tour":
-                                            valC = 50;
-                                            break;
-                                        case "Reine":
-                                            valC = 100;
-                                            break;
-                                        case "Roi":
-                                            valC = 100000;
-                                            break;
-                                        default:
-                                            valC = 0;
-                                            break;
-                                    }
-                                }
-                                //Si la cible est vide, le coup vaut 0;
-                                else
-                                    valC = 0;
-                                //Si la valeur du coup est meilleure que celle du meilleur coup
-                                //Alors ce coup est enregistré comme étant le meilleur
-                                if(valC > valMC)
-                                {
-                                    valMC = valC;
-                                    xMP = xP;
-                                    yMP = yP;
-                                    xMC = xC;
-                                    yMC = yC;
-                                }
-                            }
-        if(valMC == -1)
-            System.out.println("Erreur, aucun coup trouvé..");
-        else
-            //Une fois tous les coups examinés, exécute celui retenu comme étant le meilleur
-            deplacement(plateau[xMP][yMP], xMC, yMC);
-        // int xCible, yCible;
-        // Random random = new Random();
-        // int xNb, yNb, xNbApres, yNbApres;
-        // while(!parent.controller.tour)
-        // {
-        //     xNb = random.nextInt(7);
-        //     yNb = random.nextInt(6);
-        //     if((plateau[xNb][yNb] != null)&&(!plateau[xNb][yNb].blanc))
-        //         {
-        //             xNbApres = random.nextInt(7);
-        //             yNbApres = random.nextInt(6);
-        //             if(testDeplacement(plateau[xNb][yNb], xNbApres, yNbApres))
-        //                 deplacement(plateau[xNb][yNb], xNbApres, yNbApres);
-        //         }
-        // }
+                                coups.add(new Coup(plateau[xP][yP], xC, yC));
+        return coups;
     }
-
-
-
 
 
     protected void Victoire(boolean blanc)
@@ -285,7 +299,7 @@ public class Modele implements Serializable {
 
 
     //Simple affichage pour gérer de potentielles erreurs
-    public void afficher(Piece[][] plateau){
+    public void afficher(){
         for (int x = 0; x < 7; x++) {
             System.out.print("|");
             for (int y = 0; y < 8; y++) {
@@ -443,7 +457,7 @@ public class Modele implements Serializable {
         }
 
         //On réaffiche le plateau
-        parent.vue.AffichePlateau(plateau);
+        parent.vue.AffichePlateau();
      }
      
 
