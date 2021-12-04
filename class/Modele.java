@@ -77,11 +77,8 @@ public class Modele implements Serializable {
             //Alors, si le déplacement est autorisé par la pièce séléctionnée
             if(pieceAvant.deplace(x,y))
             {   
-                System.out.println("Deplacement autorise.");
                 //Et qu'il n'y a pas d'obstacle sur le chemin
-                if(obstacle(pieceAvant, x, y))
-                    System.out.println("Mais il y a un obstacle..");
-                else
+                if(!obstacle(pieceAvant, x, y))
                 {
                     if((pieceApres!=null)&&(!pieceApres.nom.equals("Pion")))
                         if(pieceApres.blanc)
@@ -94,12 +91,7 @@ public class Modele implements Serializable {
                     //deplacement(pieceAvant, x, y);
                 }
             }
-            else
-                //Sinon on indique que le déplacement n'est pas possible
-                System.out.println("Deplacement impossible " + x + " " + y);
         }
-        else    //Sinon on indique une erreur
-                System.out.println("Cette piece est a vous " + x + " " + y);
         return false;
     }
 
@@ -140,7 +132,7 @@ public class Modele implements Serializable {
         int tempsMax = 180;
         int tempsRest = 60*parent.vue.minute + parent.vue.seconde - 1;
         String couleur;
-        if(p.blanc)
+        if(!p.blanc)
             couleur="blanc";
         else
             couleur="noir";
@@ -246,42 +238,100 @@ public class Modele implements Serializable {
     }
 
 
+    protected IntCoup MiniMax(Piece [][] plateauTest, int profondeur, boolean tourNoir, Coup cp){
+        Piece pieceStock;
+        IntCoup val;
+        int valMax;
+        ArrayList<Coup> listeCoup = new ArrayList<Coup>();
+
+        //Au plus profond on calcul la valeur et on la remonte.
+        if(profondeur == 0)
+            return new IntCoup(calculValeur(plateauTest),cp);
+
+        //Regarde la liste des coups possible pour le joueur dont c'est le tour
+        listeCoup = getCoupsPossibles(plateauTest, tourNoir);
+
+        //Si c'est l'IA, fixe la valeur très bas par défaut puis descend en profondeur en regardant le joueur
+        if(tourNoir)
+        {
+            val = new IntCoup(-10000,cp);
+            valMax = -10000;
+            for(Coup coupNoir : listeCoup)
+            {
+                //Effectue le coup, puis descend en profondeur
+                pieceStock = deplaceVirtuellement(coupNoir, plateauTest);
+                valMax = Math.max(val.i, MiniMax(plateauTest, profondeur-1, false, coupNoir).i);
+                if(valMax>val.i){
+                    val.coup = coupNoir;
+                    val.i = valMax;
+                }
+                defaitVirtuellement(coupNoir, plateauTest, pieceStock);
+                System.out.println("Coup noir :" + coupNoir.x + coupNoir.y);
+            } 
+            //Retourne la valeur au niveau au dessus
+            return val;
+        }
+        //Si c'est le joueur blanc, fixe la valeur très haut puis descend en regardant les coups de l'IA
+        else
+        {
+            val = new IntCoup(10000,cp);
+            valMax = 10000;
+            for(Coup coupBlanc : listeCoup)
+            {
+                //Effectue le coup, puis descend en profondeur
+                pieceStock = deplaceVirtuellement(coupBlanc, plateauTest);
+                valMax = Math.min(val.i, MiniMax(plateauTest, profondeur-1, true, coupBlanc).i);
+                if(valMax<val.i){
+                    val.coup = coupBlanc;
+                    val.i = valMax;
+                }
+                //Defait le coup
+                defaitVirtuellement(coupBlanc, plateauTest, pieceStock);
+            } 
+            //Retourne la valeur au niveau au dessus
+            return val;
+        }
+    }
+
+
     public void JoueurVirtuel(){
 
-        ArrayList<Coup> listeCoup = getCoupsPossibles();
+        boolean couleur = true;
         Piece[][] plateauTest = plateau;
-        Piece pieceStock;
-        int val, valMax = -1000;
         Coup meilleurCoup = null;
+        IntCoup valMax;
 
-        //Pour chaque coup dans la liste
-        for(Coup coup : listeCoup){
-            //Test le déplacement sur un faux plateau puis calcul sa valeur
-            pieceStock = deplaceVirtuellement(coup, plateauTest);
-            val = calculValeur(plateauTest);
-            defaitVirtuellement(coup, plateauTest, pieceStock);
-            if(val>valMax){
-                valMax=val;
-                meilleurCoup = coup;
-            } 
-        }
+        int profondeur = 4;
 
-        deplacement(meilleurCoup.p, meilleurCoup.x, meilleurCoup.y);
+
+        valMax = MiniMax(plateauTest, profondeur, couleur, null);
+
+        System.out.println(valMax.i + " : ");
+
+        //Joue le meilleur coup trouvé
+        deplacement(valMax.coup.p, valMax.coup.x, valMax.coup.y);
     }
 
 
 
-    protected ArrayList<Coup> getCoupsPossibles(){
+    protected ArrayList<Coup> getCoupsPossibles(Piece[][] p, boolean IA){
         ArrayList<Coup> coups = new ArrayList<Coup>();
         for (int xP=0; xP<7; xP++)
             for (int yP=0; yP<8; yP++)
                 //Si c'est une piece noir, examine tout ses coups
-                if ((plateau[xP][yP]!=null)&&(!plateau[xP][yP].blanc))
+                if ((p[xP][yP]!=null)&&(!p[xP][yP].blanc)&&(IA)){
                     for (int xC=0; xC<7; xC++)
                         for (int yC=0; yC<8; yC++) 
                             //Si le coup est légal
-                            if(testDeplacement(plateau[xP][yP], xC, yC))
-                                coups.add(new Coup(plateau[xP][yP], xC, yC));
+                            if(testDeplacement(p[xP][yP], xC, yC))
+                                coups.add(new Coup(p[xP][yP], xC, yC));}
+                else
+                    if ((p[xP][yP]!=null)&&(p[xP][yP].blanc)&&(!IA)){
+                        for (int xC=0; xC<7; xC++)
+                            for (int yC=0; yC<8; yC++) 
+                                //Si le coup est légal
+                                if(testDeplacement(p[xP][yP], xC, yC))
+                                    coups.add(new Coup(p[xP][yP], xC, yC));}
         return coups;
     }
 
